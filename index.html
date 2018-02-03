@@ -27,43 +27,24 @@
 		<div class="reveal">
 			<div class="slides">
 				<section>Problem
-					<canvas id="canvas"></canvas>
+
 				<p>
 
 					Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
-					<table class="lattice-table">
-						<tr>
-							<!-- <td> asdasdasdasdasdasd</td> -->
-							<td class="nopadding"><img src="lib/src/right_arrow.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/vert_line.svg"/></td>
-							<td class="nopadding"><img src="lib/src/vert_line.svg"/></td>
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-						</tr>
-						<tr>
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/down_arrow.svg"/></td>		
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/right_arrow.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/down_arrow.svg"/></td>		
-						</tr>
-						<tr>
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/down_arrow.svg"/></td>		
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/right_arrow.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/down_arrow.svg"/></td>		
-						</tr>
-						<tr>
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/down_arrow.svg"/></td>		
-							<td class="nopadding"><img src="lib/src/horizontal_line.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/right_arrow.svg"/></td>	
-							<td class="nopadding"><img src="lib/src/down_arrow.svg"/></td>		
-						</tr>
-					</table>
-					How many such routes are there through a 20×20 grid?
 				</p>
+		<div style="center">
+						<canvas id="canvas" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 1;">
+						</canvas>
+						<canvas id="grid" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 0;">
+						</canvas>
+						<canvas id="canvas2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 1;">
+						</canvas>
+						<canvas id="grid2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 0;">
+						</canvas>
+
+		</div>
+
+					How many such routes are there through a 20×20 grid?
 				</section>
 				<section>Slide 2
 					<code >2(n-n-1) + <span id="po">2(n-2)</span> + ...+ 2(n-1)</code>
@@ -74,8 +55,8 @@
 						A paragraph with some text and a [link](http://hakim.se).
 
 						```2(n-n-1) + 2(n-2) + ...+ 2(n-1)
-						```	
-				    
+						```
+
 				</section>
 			</div>
 		</div>
@@ -101,8 +82,8 @@
 					]
 				});
 			Reveal.configure({
-  				keyboard: { 
-  					13: function() { 
+  				keyboard: {
+  					13: function() {
   						console.log("Enter Pressed hit")
   						let el = document.querySelectorAll("#po")[0].innerText="ESC hit"
   					}
@@ -110,59 +91,250 @@
   				});
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
-			ctx.fillStyle = 'rgb(255,255,255)'; 
+			ctx.fillStyle = 'rgb(255,255,255)';
 			var start = null;
-			let state = {
-				x:1,
-				y:1,
-				chunkX: 0,
-				chunkY: 0, 
-				duration: 10,
-				xProg: 1,
-				yProg: 1,
-				drawingDir : "x"
+					let state = {
+						pattern: ['L', 'diagonal'],
+					}
+			function initState(){
+				state = {
+					x:0,
+					y:0,
+					chunkX: 0,
+					chunkY: 0,
+					duration: 10,
+					xProg: 0,
+					yProg: 0,
+					drawingDir : null,
+					curPat :'L',
+					pattern : state.pattern,
+					swapPat: false
+				}
+				ctx.moveTo(state.x , state.y );
 			}
-			function loop(timestamp){
-				 	if (!start) start = timestamp;
-				 	var duration = timestamp - start;	
+			// function initTransState(){
+			// 	// set the progress dims to 0
+			// 	state.xProg = 0
+			// 	state.yProg = 0
+			// }
+			// function loop(timestamp){
+			//  	if (!start) start = timestamp;
+			//  	var duration = timestamp - start;
+      //
+			// 	// ctx.save()
+			// 	// ctx = canvas./getContext('2d');
+			// 	ctx.beginPath();
+			// 	ctx.moveTo(state.x , state.y );
+			// 	switch(state.curPat){
+			// 		case "L":
+			// 			if(state.drawingDir == "x"){
+			// 				state.xProg = (duration) / 10
+			// 				state.x += state.xProg
+			// 				// state.x = state.chunkX * 50 + state.xProg
+			// 				if (state.xProg >= 40 * 5 ){
+			// 					state.chunkX ++
+			// 					state.xProg = 1
+			// 					state.drawingDir = "y"
+			// 					start = 0
+			// 					}
+			// 			}else{
+			// 				state.yProg =   (duration) / 10
+			// 				state.y = state.chunkY * 50 + state.yProg
+			// 				// state.y = state.chunkY * 50 + state.yProg
+			// 				if (state.yProg >= 40 * 5){
+			// 					state.chunkY ++
+			// 					state.yProg = 1
+			// 					state.drawingDir = "x"
+			// 					start = 0
+			// 				}
+			// 			}
+			// 			if(state.chunkX >= 1 && state.chunkY >= 1)
+			// 				state.swapPat = true
+			// 			break;
+			// 		case "diagonal":
+			// 			if(state.drawingDir == "x"){
+			// 				state.xProg = (duration) / 10
+			// 				state.x = state.chunkX * 50 + state.xProg
+			// 				if (state.xProg >= 50 ){
+			// 					state.chunkX ++
+			// 					state.xProg = 1
+			// 					state.drawingDir = "y"
+			// 					start = 0
+			// 					}
+			// 				}else{
+			// 					state.yProg =   (duration) / 10
+			// 					state.y = state.chunkY * 50 + state.yProg
+			// 					if (state.yProg >= 50 ){
+			// 						state.chunkY ++
+			// 						state.yProg = 1
+			// 						state.drawingDir = "x"
+			// 						start = 0
+			// 					}
+			// 				}
+			// 			if(state.chunkX > 5 || state.chunkY > 5)
+			// 				state.swapPat = true
+			// 			break;
+			// 	}
+			// 	console.log(state.x, state.y)
+			// 	if(state.swapPat){
+			// 		initState()
+			// 		state.swapPat = false
+			// 		state.curPat = state.pattern.pop()
+			// 		window.requestAnimationFrame(loop)
+			// 		return
+			// 	}else{
+			// 		ctx.lineTo(state.x, state.y );
+			// 		ctx.strokeStyle = "white"
+			// 		ctx.stroke();
+			// 	}
+			// 	if (duration > 500000 || state.pattern.length == 0)
+			// 		return
+			// 	window.requestAnimationFrame(loop)
+			// }
+			initState()
+			function drawSteps(gridSize, rights, downs, timestamp){
+				//inverse orders rights and downs
+				downs.sort((a, b) => b - a)
+				rights.sort((a, b) => b - a)
+				// rights = [2,2]
+				// then down, right,right, down
+				//    1   2   3   4
+				// 1  |
+				//    V
+				// 2    --> -->  |
+				//			         V
 
-					// ctx.save()
-					// ctx = canvas./getContext('2d');
-					ctx.beginPath();
-					ctx.moveTo(state.x , state.y );
+			 	if (!start) start = timestamp;
+			 	let duration = timestamp - start;
+
+				ctx.beginPath();
+				ctx.moveTo(state.x , state.y );
+
+				let curRight =  rights[rights.length - 1 ] //TODO change so can include 1 length arrays
+				let curDown = downs[downs.length - 1]
+				state.drawingDir = state.drawingDir  || (curDown > curRight ? 'x': 'y')
+				// while (rights.length > 0 && downs.length > 0){
 					if(state.drawingDir == "x"){
-						state.xProg = (duration) / 10
+						state.xProg = (duration) / 90
 						state.x = state.chunkX * 50 + state.xProg
-						if (state.xProg >= 50 ){
+						// state.x  += state.xProg
+						// if(state.chunkX >= curDown - 1){
+						// 	//switch directions because we hit a point where the
+						// 	// other DIM should change
+						// 	state.drawingDir = "y"
+						// 	rights.pop()
+						// 	start = timestamp
+						// 	return {"rights": rights, "downs": downs}
+						// }
+						// if ((state.x % 52 )> 48){
+						if(state.xProg > 50){
+							// we reached a new chuck
+							// reset duration by restting start
+							// and iterate this DIM's chunk
+							// state.xProg = 1
+							start = timestamp
 							state.chunkX ++
-							state.xProg = 1
-							state.drawingDir = "y"
-							start = 0 
+							curRight = rights.pop() || Infinity
+							state.drawingDir = (curDown > curRight ? 'x': 'y')
+							// return {"rights": rights, "downs": downs}
+						}
+					}else if (state.drawingDir === 'y'){
+						// if(state.chunkY >= curRight - 1)
+						// {//switch direction to X
+						// 	state.drawingDir = "x"
+						// 	// curRight = downs.pop()
+						// 	downs.pop()
+						// 	start = timestamp
+						// 	return {"rights": rights, "downs": downs}
+						// }
+						state.yProg =   (duration) / 90
+						state.y = state.chunkY * 50 + state.yProg
+						// state.y += state.yProg
+						// if (state.yProg >= 4 ){
+						if(state.yProg > 50 ){// IF very close to a multiple of 50 Math.floor
+							console.log("sada")
+							state.chunkY ++
+							start = timestamp
+							curDown = downs.pop()
+							curDown = curDown || Infinity
+							// state.yProg = 1
+							state.drawingDir = (curDown > curRight ? 'x': 'y')
+							// return /{"rights": rights, "downs": downs}
 						}
 					}else{
-						state.yProg =   (duration) / 10
-						state.y = state.chunkY * 50 + state.yProg
-						if (state.yProg >= 50 ){
-							state.chunkY ++
-							state.yProg = 1 
-							state.drawingDir = "x"
-							start = 0
-						}
-						
+						console.log(state)
+						console.log("i love j")
 					}
-					console.log(state.x, state.y)
-					ctx.lineTo(state.x, state.y );	
-					ctx.strokeStyle = "white"
-					// ctx.lineTo(100, 100);
-					// ctx.lineTo(150, 100);
-					// ctx.lineTo(150, 150);
-					// ctx.lineTo(200, 150);
-					ctx.stroke();
-					// ctx.restore()
-					 // if (progress % 3  === ) 
-					window.requestAnimationFrame(loop)
+				// if(state.chunkX >= 5 && state.drawingDir === 'x'){
+				// 	state.swapPat = true
+				// 	state.drawingDir = 'y'
+				// 	start = timestamp
+				// 	return {"rights": rights, "downs": downs}
+        //
+				// }else if (state.chunkY >= 5 && state.drawingDir === 'y'){
+				// 	start = timestamp
+				// 	state.drawingDir = 'x'
+				// 	state.swapPat = true
+				// 	return {"rights": rights, "downs": downs}
+				// }
+
+				// }
+				ctx.lineTo(state.x, state.y );
+				console.log(state.x, state.y)
+				ctx.strokeStyle = "white"
+				ctx.stroke();
+				state.curPat = 'steps'
+				return {"rights": rights, "downs": downs}
 			}
-			window.requestAnimationFrame(loop)
+			// window.requestAnimationFrame(loop)
+
+			//test drawSteps
+			let r = [2,2]
+			let d = [1,4]
+			let results = null
+			function stepsLoop(timestamp){
+				results = results || {}
+				d = results.downs || d
+				r = results.rights || r
+				results= drawSteps(50, r ,d, timestamp)
+				if(d.length === 0 && r.length === 0)
+					{console.log("empty", state)
+					return}
+				if (timestamp - start > 50000)
+					return
+				window.requestAnimationFrame(stepsLoop)
+			}
+			window.requestAnimationFrame(stepsLoop)
+			// the render logic should be focusing on the rendering
+			var drawGrid = function(context, w, h, step) {
+			    context.beginPath();
+			    for (var x=0;x<=w;x+=step) {
+			            context.moveTo(x, 0);
+			            context.lineTo(x, h);
+			    }
+
+			    context.strokeStyle = 'grey';
+			    context.lineWidth = 3;
+			    context.stroke();
+			    context.beginPath();
+			    for (var y=0;y<=h;y+=step) {
+			            context.moveTo(0, y);
+			            context.lineTo(w, y);
+			    }
+
+			    context.strokeStyle = 'grey';
+			    context.lineWidth = 3
+			    context.strokeStyle = "grey";
+			    context.stroke();
+			};
+			var grid = document.getElementById('grid');
+			var gridCtx = grid.getContext('2d');
+			drawGrid(gridCtx, 200, 200, 50)
+			ctx.strokeStyle = "white"
+			ctx.lineWidth = 8
+			var grid2 = document.getElementById('grid2');
+			var grid2Ctx = grid2.getContext('2d');
+			drawGrid(grid2Ctx, 200, 200, 50)
 		</script>
 	</body>
 </html>
