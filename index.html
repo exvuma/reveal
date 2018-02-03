@@ -192,50 +192,52 @@
 			// 	window.requestAnimationFrame(loop)
 			// }
 			initState()
+			let curRight, curDown = null;
 			function drawSteps(gridSize, rights, downs, timestamp){
 				//inverse orders rights and downs
 				downs.sort((a, b) => b - a)
 				rights.sort((a, b) => b - a)
 				// rights = [2,2]
 				// then down, right,right, down
-				//    1   2   3   4
+				//    1     2
 				// 1  |
 				//    V
-				// 2    --> -->  |
-				//			         V
+				// 2  --> -->|
+				//			     V
 
 			 	if (!start) start = timestamp;
 			 	let duration = timestamp - start;
 
 				ctx.beginPath();
 				ctx.moveTo(state.x , state.y );
-
-				let curRight =  rights[rights.length - 1 ] //TODO change so can include 1 length arrays
-				let curDown = downs[downs.length - 1]
+				if(!curRight )
+				 curRight = rights.pop()
+				if(!curDown)
+				 curDown = downs.pop()
+				// let curRight =  rights[rights.length - 1 ] || Infinity//TODO change so can include 1 length arrays
+				// let curDown = downs[downs.length - 1] || Infinity
 				state.drawingDir = state.drawingDir  || (curDown > curRight ? 'x': 'y')
-				// while (rights.length > 0 && downs.length > 0){
 					if(state.drawingDir == "x"){
-						state.xProg = (duration) / 90
+						state.xProg = (duration) / 30
 						state.x = state.chunkX * 50 + state.xProg
-						// state.x  += state.xProg
 						// if(state.chunkX >= curDown - 1){
 						// 	//switch directions because we hit a point where the
 						// 	// other DIM should change
-						// 	state.drawingDir = "y"
-						// 	rights.pop()
-						// 	start = timestamp
-						// 	return {"rights": rights, "downs": downs}
-						// }
-						// if ((state.x % 52 )> 48){
+
 						if(state.xProg > 50){
 							// we reached a new chuck
 							// reset duration by restting start
 							// and iterate this DIM's chunk
 							// state.xProg = 1
-							start = timestamp
+							console.log("pop Rights", state)
+							console.log("rights", rights)
+							console.log("downs", downs)
+							curRight =  rights[rights.length - 1 ] || Infinity
 							state.chunkX ++
-							curRight = rights.pop() || Infinity
 							state.drawingDir = (curDown > curRight ? 'x': 'y')
+							 if(state.drawingDir === 'x')
+									curRight = rights.pop() || Infinity
+							start = timestamp
 							// return {"rights": rights, "downs": downs}
 						}
 					}else if (state.drawingDir === 'y'){
@@ -247,40 +249,28 @@
 						// 	start = timestamp
 						// 	return {"rights": rights, "downs": downs}
 						// }
-						state.yProg =   (duration) / 90
+						state.yProg =   (duration) / 30
 						state.y = state.chunkY * 50 + state.yProg
 						// state.y += state.yProg
 						// if (state.yProg >= 4 ){
 						if(state.yProg > 50 ){// IF very close to a multiple of 50 Math.floor
-							console.log("sada")
+							console.log("pop Downs", state)
+							console.log("rights", rights)
+							console.log("downs", downs)
 							state.chunkY ++
-							start = timestamp
-							curDown = downs.pop()
-							curDown = curDown || Infinity
 							// state.yProg = 1
+							curDown =  downs[downs.length - 1 ] || Infinity
 							state.drawingDir = (curDown > curRight ? 'x': 'y')
-							// return /{"rights": rights, "downs": downs}
+							if(state.drawingDir === 'y')
+								curDown = downs.pop() || Infinity
+							start = timestamp
 						}
 					}else{
 						console.log(state)
 						console.log("i love j")
 					}
-				// if(state.chunkX >= 5 && state.drawingDir === 'x'){
-				// 	state.swapPat = true
-				// 	state.drawingDir = 'y'
-				// 	start = timestamp
-				// 	return {"rights": rights, "downs": downs}
-        //
-				// }else if (state.chunkY >= 5 && state.drawingDir === 'y'){
-				// 	start = timestamp
-				// 	state.drawingDir = 'x'
-				// 	state.swapPat = true
-				// 	return {"rights": rights, "downs": downs}
-				// }
-
-				// }
 				ctx.lineTo(state.x, state.y );
-				console.log(state.x, state.y)
+				// console.log(state.x, state.y)
 				ctx.strokeStyle = "white"
 				ctx.stroke();
 				state.curPat = 'steps'
@@ -289,8 +279,8 @@
 			// window.requestAnimationFrame(loop)
 
 			//test drawSteps
-			let r = [2,2]
-			let d = [1,4]
+			let r = [1, 1,  1, 5]//[1,2, 3, 4]
+			let d = [4, 4, 4, 4 ]//[1, 2, 3, 4]
 			let results = null
 			function stepsLoop(timestamp){
 				results = results || {}
