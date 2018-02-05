@@ -321,6 +321,68 @@
 				return downs
 			}
 			let results = null
+			function generateRights(n, index){
+				let newb = []//new Array(n)
+				let newb3 = []
+				// for (var i = 0; i < n; i++) {
+				// 	for (var i = 0; i < n; i++) {
+				// 		for (var i = 0; i < n; i++) {
+				// 			for (var i = 0; i < n; i++) {
+				// 				..
+				// 				for (var i = 0; i < n; i++) {
+				// 					rights = [i, i+j, i+j + k, .... ,i+j+k+m]
+				//n =2 [1,1], [1,2], [1,3],[2,2], [2,3],[3,3]
+					if(n === 1) return [[1],[2]]
+
+					// if(n === 1) return rights.map((el, ii) => {
+					// 	return ii
+					// })
+						// olds = generateRights(n-1, index + 1) //[ [1], [2] ]
+						// for(var k = 0; k < olds.length + 1; k++){
+
+						// }
+						// 		old = olds[k] //[1]
+						// olds.push(olds[olds.length - 1])
+						// olds = [[1],[2],[3],[4]]
+						olds = [[1],[2],[3]]
+						olds.map((arr, ii) => { // arr [1] [2]; ii = 0,1
+						//
+						let curRight
+						let lastRight = 1
+							if(typeof(arr) !== typeof([]))return
+							let newb2  = []
+							arr.map((el,jj) => { // el = 1
+								lastRight = el
+								for (var i = 0; i < n+1 ; i++) {//n=2, i:0,1,2
+										for (var j = 0; j < n+1 ; j++) {//n=2, i:0,1,2
+											curRight = el  +i
+											if ((curRight ) < lastRight || curRight > n + 1){
+												// newb2 = []
+												continue;
+											}
+
+											lastRight = curRight
+											newb2.push(curRight)
+										}
+									// newb2.push(el)
+									// newb2.push( el + ii + jj + i)
+									// console.log("newb22",newb2)
+									newb.push(newb2)
+									newb2 = []
+
+								}
+								// newb.push(newb2)
+								//console.log("newb2",newb2)
+
+								newb3.push(el)
+							})
+						// }
+							//[1,1],[1,2], [1,3], ..
+							})
+					return newb
+					}
+					// rights[i] = [i, i, ...., i]
+			console.log(generateRights(2,1))
 			function stepsLoop(timestamp){
 				// for(let i = 0 ; i < 5; i++){
 				// 	for(let j = i ; j < 5; j++){
@@ -343,8 +405,8 @@
 			}
 			// window.requestAnimationFrame(stepsLoop)
 			let test = [1, 1, 3, 4]
-			console.log( "rights, ",  test)
-			console.log("downs", convertRightsToDowns( test))
+			// console.log( "rights, ",  test)
+			// console.log("downs", convertRightsToDowns( test))
 			// the render logic should be focusing on the rendering
 			var drawGrid = function(context, w, h, step) {
 			    context.beginPath();
