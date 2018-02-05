@@ -156,36 +156,18 @@
 							// and iterate this DIM's chunk
 							curRight =  rights[rights.length - 1 ] || Infinity
 							rights.pop()
-							// curRight = rights.pop() || Infinity
 							state.chunkX ++
 							state.drawingDir = (curDown > curRight ? 'x': 'y')
-							// if(state.drawingDir === 'x')
 							start = timestamp
-							// return {"rights": rights, "downs": downs}
 						}
 					}else if (state.drawingDir === 'y'){
-						// if(state.chunkY >= curRight - 1)
-						// {//switch direction to X
-						// 	state.drawingDir = "x"
-						// 	// curRight = downs.pop()
-						// 	downs.pop()
-						// 	start = timestamp
-						// 	return {"rights": rights, "downs": downs}
-						// }
 						state.yProg =   (duration) / speed
 						state.y = state.chunkY * 50 + state.yProg
-						// state.y += state.yProg
-						// if (state.yProg >= 4 ){
 						if(state.yProg > 50 ){// IF very close to a multiple of 50 Math.floor
-							// console.log("pop Downs", state)
-							// console.log("rights", rights)
-							// console.log("downs", downs)
 							state.chunkY ++
-							// state.yProg = 1
-							curDown =  downs.pop() || Infinity// downs[downs.length - 1 ] || Infinity
+
+							curDown =  downs.pop() || Infinity
 							state.drawingDir = (curDown > curRight ? 'x': 'y')
-							// if(state.drawingDir === 'y')
-							// curDown = downs.pop() || Infinity
 							start = timestamp
 						}
 					}else{
@@ -200,13 +182,6 @@
 				return {"rights": rights, "downs": downs}
 			}
 			// window.requestAnimationFrame(loop)
-
-			//test drawSteps
-			// let r = [1, 1, 1, 5]//[1,2, 3, 4]
-			// let d = [4, 4, 4, 4 ]//[1, 2, 3, 4]
-
-			// [1]
-			// [2]
 			function convertRightsToDowns(rights){
 				let numRights = 1
 				let prevRight = 0
@@ -240,8 +215,6 @@
 				return downs
 			}
 			let results = {}
-
-					// rights[i] = [i, i, ...., i]
 				let rights = [
 					[1, 1, 1, 1],
 					[1, 1, 1, 2],
@@ -262,31 +235,20 @@
 			function stepsLoop(timestamp){
 
 				results = results || {}
-				if(!results.rights) console.log("popp")
 				r = results.rights || rights.pop()
 				d = results.downs || convertRightsToDowns(r)
-				console.log("drawing")
-				console.log("rights", results.rights)
-				console.log("empty", state)
-				console.log('downs', results.downs)
 
 				results= drawSteps(50, r ,d, timestamp)
-				// if(d.length === 0 && r.length === 0)
+
 				if(state.chunkX >= n && state.chunkY >= n)
 					{
-						// return
 						// pop from Rights
 						results.rights = rights.pop() || []
 						results.downs = convertRightsToDowns(results.rights)
 						start = 0
 						state = initState()
-						console.log(state.chunkY)
-						if(state.chunkY !== 0) console.log(state.chunkY)
-					//	return
 				}
-				else{
 
-				}
 				if(rights.length === 0)return
 				window.requestAnimationFrame(stepsLoop)
 				if (timestamp - start > 50000)
@@ -294,8 +256,7 @@
 			}
 			window.requestAnimationFrame(stepsLoop)
 			let test = [1, 1, 3, 4]
-			// console.log( "rights, ",  test)
-			// console.log("downs", convertRightsToDowns( test))
+
 			// the render logic should be focusing on the rendering
 			var drawGrid = function(context, w, h, step) {
 			    context.beginPath();
