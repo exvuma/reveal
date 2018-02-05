@@ -37,6 +37,8 @@
 						</canvas>
 						<canvas id="grid" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 0;">
 						</canvas>
+						<canvas id="arrow" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 0;">
+						</canvas>
 						<canvas id="canvas2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 1;">
 						</canvas>
 						<canvas id="grid2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 0;">
@@ -170,9 +172,6 @@
 							state.drawingDir = (curDown > curRight ? 'x': 'y')
 							start = timestamp
 						}
-					}else{
-						console.log(state)
-						console.log("i love j")
 					}
 				ctx.lineTo(state.x, state.y );
 				// console.log(state.x, state.y)
@@ -230,6 +229,8 @@
 					[1, 1, 3, 5],
 					[1, 1, 1, 1],
 				]//[1,2, 3, 4]
+				var arrow = document.getElementById('arrow');
+				var arrowCtx = arrow.getContext('2d');
 			results.rights = rights[0]
 			let n = results.rights.length
 			function stepsLoop(timestamp){
@@ -239,7 +240,8 @@
 				d = results.downs || convertRightsToDowns(r)
 
 				results= drawSteps(50, r ,d, timestamp)
-
+				clearArrow(arrowCtx, arrow)
+				placeArrow(arrowCtx, state.x, state.y - 5 )
 				if(state.chunkX >= n && state.chunkY >= n)
 					{
 						// pop from Rights
@@ -258,6 +260,33 @@
 			let test = [1, 1, 3, 4]
 
 			// the render logic should be focusing on the rendering
+			function placeArrow(ctx, x, y){
+				// if (canvas.getContext) {
+				// var ctx = canvas.getContext('2d');
+
+				ctx.beginPath();
+				base = 0
+				ctx.moveTo(base + x, base+y);
+				ctx.lineTo(base + x, base+24+y);
+				ctx.lineTo(base + 15+x, base+12+y);
+				ctx.strokeStyle = "white"
+				ctx.fillStyle = "white"
+				// ctx.stroke();
+				ctx.fill();
+
+			}
+			function clearArrow(ctx,canvas){
+				// ctx.clearRect(x, y, width, height)//
+				ctx.clearRect(0,0,canvas.width, canvas.height)
+
+// x	Clear rectangle x position
+// y	Clear rectangle y position
+// width	Clear rectangle width
+// height	Clear rectangle height
+
+			}
+
+			placeArrow(arrowCtx, 200, 200, 50)
 			var drawGrid = function(context, w, h, step) {
 			    context.beginPath();
 			    for (var x=0;x<=w;x+=step) {
