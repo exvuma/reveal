@@ -279,10 +279,57 @@
 			// window.requestAnimationFrame(loop)
 
 			//test drawSteps
-			let r = [1, 1,  1, 5]//[1,2, 3, 4]
-			let d = [4, 4, 4, 4 ]//[1, 2, 3, 4]
+			// let r = [1, 1, 1, 5]//[1,2, 3, 4]
+			// let d = [4, 4, 4, 4 ]//[1, 2, 3, 4]
+			let r = [1, 1, 5, 5]//[1,2, 3, 4]
+			let d = [3, 3, 3, 3 ]//[1, 2, 3, 4]
+			r = [1, 5, 5, 5]//[5,2, 3, 4]
+			d = [2, 2, 2, 2 ]//[1, 2, 3, 4]
+
+			// [1]
+			// [2]
+			function convertRightsToDowns(rights){
+				let numRights = 1
+				let prevRight = 0
+				let totalRights = 0
+				let numDowns
+				let downs = []
+				for (var i = 1; i < rights.length ; i++) {
+					totalRights = i + 1
+					if(rights[i] === rights[i-1]){
+						prevRight = rights[i]
+						numRights ++
+					}
+					else{
+						numDowns = rights[i] - prevRight
+
+						if(numDowns < 0) return "invalid rights entered"
+						for(let j = 0 ; j < numDowns; j++)
+							downs.push(totalRights)
+					}
+					prevRight = rights[i]
+				}
+				if(downs.length < rights.length){
+					for (var i = downs.length; i < rights.length; i++) {
+							if(rights[i] === rights.length +1) downs.push(1)
+							else{
+
+								downs.push( rights.length + 1)
+						}
+					}
+				}
+				return downs
+			}
 			let results = null
 			function stepsLoop(timestamp){
+				// for(let i = 0 ; i < 5; i++){
+				// 	for(let j = i ; j < 5; j++){
+				// 		// r = [i, i+j, i, 4+i]
+				// 		// r.map( el, index => if(index < i) return 1; return el)
+				// 		r[i+1:j] = 2
+				// 		r[j+1:5]
+				// 	}
+				// }
 				results = results || {}
 				d = results.downs || d
 				r = results.rights || r
@@ -294,7 +341,10 @@
 					return
 				window.requestAnimationFrame(stepsLoop)
 			}
-			window.requestAnimationFrame(stepsLoop)
+			// window.requestAnimationFrame(stepsLoop)
+			let test = [1, 1, 3, 4]
+			console.log( "rights, ",  test)
+			console.log("downs", convertRightsToDowns( test))
 			// the render logic should be focusing on the rendering
 			var drawGrid = function(context, w, h, step) {
 			    context.beginPath();
