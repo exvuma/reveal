@@ -94,7 +94,7 @@
 			///////////////////////////////////////////////////
 			///////////////// Global Varibles /////////////////
 			///////////////////////////////////////////////////
-			const speed = 6;
+			const speed = 10;
 			let start = null;
 
 			 // state = {
@@ -144,7 +144,7 @@
 				state.curRight = state.curRight || rights.pop() || 0
 				state.drawingDir = state.drawingDir  || (state.curDown >= state.curRight ? 'x': 'y')
 				if(state.curRight === 0 || state.chunkX > n) state.drawingDir = 'y'
-				if(state.curDown === 0|| state.chunkY > n) state.drawingDir = 'x'
+				if(state.curDown === 0 || state.chunkY > n) state.drawingDir = 'x'
 					if(state.drawingDir == "x"){
 						state.xProg = (duration) / speed
 						state.x = state.chunkX * 50 + state.xProg
@@ -236,7 +236,7 @@
 				results.downs = results.downs || convertRightsToDowns(results.rights)
 				// console.log("rights", r)
 				// console.log("downs", d)
-				if( (!results.downs || results.downs.length === 0) &&( !results.rights || results.rights.length === 0)) {
+				if( (!results.downs || results.downs.length === 0) &&( !results.rights || results.rights.length === 0) && (state.chunkX >= n && state.chunkY >= n )) {
 					//start over
 					results = null
 					start = timestamp
@@ -247,7 +247,7 @@
 				}
 				clearArrow(arrowCtx, arrow)
 				placeArrow(arrowCtx, state.x, state.y +55)
-				if(state.chunkX >= n && state.chunkY >= n)
+				if(state.chunkX > n && state.chunkY > n)
 					{
 						results = null
 						start = timestamp
@@ -309,8 +309,7 @@
 			///////////////////////////////////////////////////
 			///////////////// Main /////////////////
 			///////////////////////////////////////////////////
-			const Rights = [
-					// [1, 1, 1, 1],
+			let RightsRev = [
 					[1, 1, 1, 2],
 					[1, 1, 1, 3],
 					[1, 1, 1, 4],
@@ -336,8 +335,64 @@
 					[1, 2, 3, 5],
 					[1, 2, 4, 4],
 					[1, 2, 4, 5],
-					[1, 2, 5, 5],
-				]//[1,2, 3, 4]
+					[1, 2, 5, 5]
+				 ]//[) [1, 2, 5, 5]
+				 const Rights =
+				 [
+					//  [1, 5, 4, 5],
+					// [1, 5, 4, 5],
+					// [1, 5, 4, 4],
+
+				  	[1, 4, 4, 5],
+					 [1, 4, 4, 5],
+					 [1, 4, 4, 4],
+
+
+					 [1, 3, 5, 5],
+					 [1, 3, 4, 5],
+					 [1, 3, 4, 4],
+					 [1, 3, 3, 5],
+					 [1, 3, 3, 4],
+					 [1, 3, 3, 3],
+
+					 [1, 2, 5, 5],
+					 [1, 2, 4, 5],
+					 [1, 2, 4, 4],
+					 [1, 2, 3, 5],
+					 [1, 2, 3, 4],
+					 [1, 2, 3, 3],
+					 [1, 2, 2, 5],
+					 // [1, 2, 2, 4],
+					 [1, 2, 2, 3],
+					 [1, 2, 2, 2],
+
+
+					 [1, 1, 5, 5],
+
+					 [1, 1, 4, 5],
+					 [1, 1, 4, 4],
+
+					 // [1, 1, 3, 5],
+					 // [1, 1, 3, 4],
+					 [1, 1, 3, 3],
+
+					 // [1, 1, 2, 5],
+					 // [1, 1, 2, 4],
+					 // [1, 1, 2, 3],
+					 // [1, 1, 2, 2],
+
+					 [1, 1, 1, 5],
+					 [1, 1, 1, 4],
+					 // [1, 1, 1, 3],
+					 // [1, 1, 1, 2],
+					 [1, 1, 1, 1],
+
+				 ]
+			// const Rights = RightsRev.map((el, i, arr) => {
+			// 	let g = arr.length - i - 1
+			// 	let t = arr[arr.length - i - 1]
+			// 	return arr[arr.length - i - 1]
+			// })
 			const arrow = document.getElementById('arrow');
 			let results = {}
 			const canvas = document.getElementById('canvas');
@@ -358,10 +413,14 @@
 			drawGrid(gridCtx, 200, 200, 50)
 			ctx.strokeStyle = "white"
 			ctx.lineWidth = 8
+
+			const canvas2 = document.getElementById('canvas2');
+			const ctx2= canvas.getContext('2d');
 			let grid2 = document.getElementById('grid2');
 			let grid2Ctx = grid2.getContext('2d');
 			drawGrid(grid2Ctx, 200, 200, 50)
-			window.requestAnimationFrame(stepsLoop)
+			window.requestAnimationFrame(stepsLoop,ctx)
+			window.requestAnimationFrame(stepsLoop,ctx2)
 		</script>
 	</body>
 </html>
