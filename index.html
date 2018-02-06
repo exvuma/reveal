@@ -94,7 +94,7 @@
 			///////////////////////////////////////////////////
 			///////////////// Global Varibles /////////////////
 			///////////////////////////////////////////////////
-			const speed = 10;
+			const speed = 3;
 			let start = null;
 
 			 // state = {
@@ -147,12 +147,12 @@
 				if(state.curDown === 0 || state.chunkY > n) state.drawingDir = 'x'
 					if(state.drawingDir == "x"){
 						state.xProg = (duration) / speed
-						state.x = state.chunkX * 50 + state.xProg
+						state.x = state.chunkX * 100 + state.xProg
 						// if(state.chunkX >= state.curDown - 1){
 						// 	//switch directions because we hit a point where the
 						// 	// other DIM should change
 
-						if(state.xProg > 50){
+						if(state.xProg > 100){
 							// we reached a new chuck
 							// reset duration by restting start
 							// and iterate this DIM's chunk
@@ -168,8 +168,8 @@
 						}
 					}else if (state.drawingDir === 'y'){
 						state.yProg =   (duration) / speed
-						state.y = state.chunkY * 50 + state.yProg
-						if(state.yProg > 50 ){// IF very close to a multiple of 50 Math.floor
+						state.y = state.chunkY * 100 + state.yProg
+						if(state.yProg > 100 ){// IF very close to a multiple of 50 Math.floor
 							state.chunkY ++
 							// console.log("about to pop downs")
 							// console.log( downs)
@@ -188,9 +188,9 @@
 			}
 			// window.requestAnimationFrame(loop)
 			function convertRightsToDowns(input_rights){
-				let numRights = 1
-				let prevRight = 1
-				let totalRights = 0
+				let numRights = 1//number of consecutive
+				let prevRight = input_rights[0]
+				let totalRights = 0 // the number we will start down at
 				let numDowns
 				let downs = []
 				if (!input_rights) return null
@@ -212,7 +212,7 @@
 				}
 				if(downs.length < input_rights.length){
 					for (let i = downs.length; i < input_rights.length; i++) {
-							if(input_rights[i] === input_rights.length +1) downs.push(1)
+							if(input_rights[i] >= input_rights.length ) downs.push(1)
 							else{
 
 								downs.push( input_rights.length + 1)
@@ -226,7 +226,7 @@
 				results = results || {}
 				if(!results.rights) //|| (results.rights && !results.rights.length))
 				{//if we haven't started yet
-					results.rights = Rights.pop()
+					results.rights = smallRights.pop()
 				}
 				else {
 						// r = results.rights
@@ -254,7 +254,7 @@
 						Object.assign( state, initState())
 				}
 
-				if(Rights.length === 0) return
+				if(smallRights.length === 0) return
 					// console.log("should i return here")
 				window.requestAnimationFrame(stepsLoop)
 				if (timestamp - start > 50000)
@@ -393,12 +393,26 @@
 			// 	let t = arr[arr.length - i - 1]
 			// 	return arr[arr.length - i - 1]
 			// })
+			const smallRights = [
+				// [3,3,3],
+				// [3,3,3],
+				[3,3],
+				// [2,2,2],
+				// [3,3],
+				[2,3],
+				// [2,2,2],
+				[2,2],
+        // //
+				[1,3],
+				[1,2],
+				[1,1],
+			]
 			const arrow = document.getElementById('arrow');
 			let results = {}
 			const canvas = document.getElementById('canvas');
 			const ctx = canvas.getContext('2d');
 			ctx.fillStyle = 'rgb(255,255,255)';
-			const n = 4//results.rights.length
+			const n = 2//results.rights.length
 			const arrowCtx = arrow.getContext('2d');
 			// results.rights = rights[0]
 
@@ -410,7 +424,7 @@
 			placeArrow(arrowCtx, 200, 200, 50)
 			let grid = document.getElementById('grid');
 			let gridCtx = grid.getContext('2d');
-			drawGrid(gridCtx, 200, 200, 50)
+			drawGrid(gridCtx, 200, 200, 100)
 			ctx.strokeStyle = "white"
 			ctx.lineWidth = 8
 
@@ -418,7 +432,7 @@
 			const ctx2= canvas.getContext('2d');
 			let grid2 = document.getElementById('grid2');
 			let grid2Ctx = grid2.getContext('2d');
-			drawGrid(grid2Ctx, 200, 200, 50)
+			drawGrid(grid2Ctx, 200, 200, 100)
 			window.requestAnimationFrame(stepsLoop,ctx)
 			window.requestAnimationFrame(stepsLoop,ctx2)
 		</script>
