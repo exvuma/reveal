@@ -15,7 +15,7 @@
 		<script src="plugin/markdown/markdown.js"></script> -->
 		<!-- Printing and PDF exports -->
 		<script>
-			var link = document.createElement( 'link' );
+			let link = document.createElement( 'link' );
 			link.rel = 'stylesheet';
 			link.type = 'text/css';
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
@@ -32,12 +32,12 @@
 
 					Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
 				</p>
+				<canvas id="arrow" width="350" height="350" style="position: absolute; left: 0; top: 250pt; z-index: 10;">
+				</canvas>
 		<div style="center">
 						<canvas id="canvas" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 1;">
 						</canvas>
 						<canvas id="grid" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 0;">
-						</canvas>
-						<canvas id="arrow" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 0;">
 						</canvas>
 						<canvas id="canvas2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 1;">
 						</canvas>
@@ -70,7 +70,6 @@
 			// More info about config & dependencies:
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
-			const speed = 3;
 			Reveal.initialize({
 				math: {
 						mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
@@ -92,16 +91,22 @@
   					}
   				}
   				});
-			var canvas = document.getElementById('canvas');
-			var ctx = canvas.getContext('2d');
-			ctx.fillStyle = 'rgb(255,255,255)';
+			///////////////////////////////////////////////////
+			///////////////// Global Varibles /////////////////
+			///////////////////////////////////////////////////
+			const speed = 6;
 			let start = null;
-			 state = {
-						pattern: ['L', 'diagonal'],
-					}
-					let curRight, curDown = null;
+
+			 // state = {
+				// 		pattern: ['L', 'diagonal'],
+				// 	}
+			// let state.curRight, state.curDown = null;
+			///////////////////////////////////////////////////
+			///////////////// Functions  /////////////////
+			///////////////////////////////////////////////////
+
 			function initState(){
-				state = {
+				return{
 					x:0,
 					y:0,
 					chunkX: 0,
@@ -111,17 +116,15 @@
 					yProg: 0,
 					drawingDir : null,
 					curPat :'L',
-					pattern : state.pattern,
-					swapPat: false
+					// pattern : state.pattern,
+					curRight: null,//the next right in the rights arr that we haven't chunked yet
+					curDown:null
+					// swapPat: false
 				}
 				ctx.moveTo(state.x , state.y );
-				curRight  = null
-				curDown = null;
 				return state
 			}
-
-			state = initState()
-			function drawSteps(gridSize, rights, downs, timestamp){
+			function drawSteps(gridSize, rights, downs, timestamp, n){
 				//inverse orders rights and downs
 				downs.sort((a, b) => b - a)
 				rights.sort((a, b) => b - a)
@@ -134,21 +137,18 @@
 				//			     V
 
 			 	if (!start) start = timestamp;
-			 	let duration = timestamp - start;
-
+			 	const duration = timestamp - start;
 				ctx.beginPath();
 				ctx.moveTo(state.x , state.y );
-				if(!curRight )
-				 curRight = rights.pop() // the current right we are on from the array rights
-				if(!curDown)
-				 curDown = downs.pop()
-				// let curRight =  rights[rights.length - 1 ] || Infinity//TODO change so can include 1 length arrays
-				// let curDown = downs[downs.length - 1] || Infinity
-				state.drawingDir = state.drawingDir  || (curDown > curRight ? 'x': 'y')
+				state.curDown = state.curDown || downs.pop() || 0
+				state.curRight = state.curRight || rights.pop() || 0
+				state.drawingDir = state.drawingDir  || (state.curDown >= state.curRight ? 'x': 'y')
+				if(state.curRight === 0 || state.chunkX > n) state.drawingDir = 'y'
+				if(state.curDown === 0|| state.chunkY > n) state.drawingDir = 'x'
 					if(state.drawingDir == "x"){
 						state.xProg = (duration) / speed
 						state.x = state.chunkX * 50 + state.xProg
-						// if(state.chunkX >= curDown - 1){
+						// if(state.chunkX >= state.curDown - 1){
 						// 	//switch directions because we hit a point where the
 						// 	// other DIM should change
 
@@ -156,10 +156,14 @@
 							// we reached a new chuck
 							// reset duration by restting start
 							// and iterate this DIM's chunk
-							curRight =  rights[rights.length - 1 ] || Infinity
-							rights.pop()
+							state.curRight =  rights.pop() ||  0
+							// if(rights.length === 0) state.curRight = 0
+							// console.log("about to pop rights")
+							// console.log( rights)
+					//		r
 							state.chunkX ++
-							state.drawingDir = (curDown > curRight ? 'x': 'y')
+							// if(state.curDown === 0 )
+							state.drawingDir = (state.curDown > state.curRight ? 'x': 'y')
 							start = timestamp
 						}
 					}else if (state.drawingDir === 'y'){
@@ -167,9 +171,11 @@
 						state.y = state.chunkY * 50 + state.yProg
 						if(state.yProg > 50 ){// IF very close to a multiple of 50 Math.floor
 							state.chunkY ++
-
-							curDown =  downs.pop() || Infinity
-							state.drawingDir = (curDown > curRight ? 'x': 'y')
+							// console.log("about to pop downs")
+							// console.log( downs)
+							state.curDown =  downs.pop() || 0
+							// if(downs.length === 0) state.curDown = 0
+							state.drawingDir = (state.curDown >= state.curRight ? 'x': 'y')
 							start = timestamp
 						}
 					}
@@ -181,88 +187,82 @@
 				return {"rights": rights, "downs": downs}
 			}
 			// window.requestAnimationFrame(loop)
-			function convertRightsToDowns(rights){
+			function convertRightsToDowns(input_rights){
 				let numRights = 1
-				let prevRight = 0
+				let prevRight = 1
 				let totalRights = 0
 				let numDowns
 				let downs = []
-				for (var i = 1; i < rights.length ; i++) {
+				if (!input_rights) return null
+				if(input_rights.length === 0 ) return []
+				for (let i = 1; i < input_rights.length ; i++) {
 					totalRights = i + 1
-					if(rights[i] === rights[i-1]){
-						prevRight = rights[i]
+					if(input_rights[i] === input_rights[i-1]){
+						prevRight = input_rights[i]
 						numRights ++
 					}
 					else{
-						numDowns = rights[i] - prevRight
+						numDowns = input_rights[i] - prevRight
 
-						if(numDowns < 0) return "invalid rights entered"
+						if(numDowns < 0) return []//"invalid input_rights entered"
 						for(let j = 0 ; j < numDowns; j++)
 							downs.push(totalRights)
 					}
-					prevRight = rights[i]
+					prevRight = input_rights[i]
 				}
-				if(downs.length < rights.length){
-					for (var i = downs.length; i < rights.length; i++) {
-							if(rights[i] === rights.length +1) downs.push(1)
+				if(downs.length < input_rights.length){
+					for (let i = downs.length; i < input_rights.length; i++) {
+							if(input_rights[i] === input_rights.length +1) downs.push(1)
 							else{
 
-								downs.push( rights.length + 1)
+								downs.push( input_rights.length + 1)
 						}
 					}
 				}
 				return downs
 			}
-			let results = {}
-				let rights = [
-					[1, 1, 1, 1],
-					[1, 1, 1, 2],
-					[1, 1, 1, 3],
-					[1, 1, 1, 4],
-					[1, 1, 1, 5],
-					[1, 1, 2, 2],
-					[1, 1, 2, 3],
-					[1, 1, 2, 4],
-					[1, 1, 2, 5],
-					[1, 1, 3, 3],
-					[1, 1, 3, 4],
-					[1, 1, 3, 5],
-					[1, 1, 1, 1],
-				]//[1,2, 3, 4]
-				var arrow = document.getElementById('arrow');
-				var arrowCtx = arrow.getContext('2d');
-			results.rights = rights[0]
-			let n = results.rights.length
 			function stepsLoop(timestamp){
 
 				results = results || {}
-				r = results.rights || rights.pop()
-				d = results.downs || convertRightsToDowns(r)
-
-				results= drawSteps(50, r ,d, timestamp)
+				if(!results.rights) //|| (results.rights && !results.rights.length))
+				{//if we haven't started yet
+					results.rights = Rights.pop()
+				}
+				else {
+						// r = results.rights
+				}
+				// if(results.rights && results.rights.length === 0 && results.downs.length === 0)
+				// 	results.rights = rights.pop()
+				results.downs = results.downs || convertRightsToDowns(results.rights)
+				// console.log("rights", r)
+				// console.log("downs", d)
+				if( (!results.downs || results.downs.length === 0) &&( !results.rights || results.rights.length === 0)) {
+					//start over
+					results = null
+					start = timestamp
+					Object.assign( state, initState())
+				}
+				else{
+					results = drawSteps(50,results.rights, results.downs, timestamp, n)
+				}
 				clearArrow(arrowCtx, arrow)
-				placeArrow(arrowCtx, state.x, state.y - 5 )
+				placeArrow(arrowCtx, state.x, state.y +55)
 				if(state.chunkX >= n && state.chunkY >= n)
 					{
-						// pop from Rights
-						results.rights = rights.pop() || []
-						results.downs = convertRightsToDowns(results.rights)
-						start = 0
-						state = initState()
+						results = null
+						start = timestamp
+						Object.assign( state, initState())
 				}
 
-				if(rights.length === 0)return
+				if(Rights.length === 0) return
+					// console.log("should i return here")
 				window.requestAnimationFrame(stepsLoop)
 				if (timestamp - start > 50000)
 					return
 			}
-			window.requestAnimationFrame(stepsLoop)
-			let test = [1, 1, 3, 4]
-
-			// the render logic should be focusing on the rendering
 			function placeArrow(ctx, x, y){
 				// if (canvas.getContext) {
-				// var ctx = canvas.getContext('2d');
+				// letctx = canvas.getContext('2d');
 
 				ctx.beginPath();
 				base = 0
@@ -279,43 +279,89 @@
 				// ctx.clearRect(x, y, width, height)//
 				ctx.clearRect(0,0,canvas.width, canvas.height)
 
-// x	Clear rectangle x position
-// y	Clear rectangle y position
-// width	Clear rectangle width
-// height	Clear rectangle height
+				// x	Clear rectangle x position
+				// y	Clear rectangle y position
+				// width	Clear rectangle width
+				// height	Clear rectangle height
 
 			}
+			function drawGrid (context, w, h, step) {
+				context.beginPath();
+				for (let x=0;x<=w;x+=step) {
+					context.moveTo(x, 0);
+					context.lineTo(x, h);
+				}
+
+				context.strokeStyle = 'grey';
+				context.lineWidth = 3;
+				context.stroke();
+				context.beginPath();
+				for (let y=0;y<=h;y+=step) {
+					context.moveTo(0, y);
+					context.lineTo(w, y);
+				}
+
+				context.strokeStyle = 'grey';
+				context.lineWidth = 3
+				context.strokeStyle = "grey";
+				context.stroke();
+			};
+			///////////////////////////////////////////////////
+			///////////////// Main /////////////////
+			///////////////////////////////////////////////////
+			const Rights = [
+					// [1, 1, 1, 1],
+					[1, 1, 1, 2],
+					[1, 1, 1, 3],
+					[1, 1, 1, 4],
+					[1, 1, 1, 5],
+					[1, 1, 2, 2],
+					[1, 1, 2, 3],
+					[1, 1, 2, 4],
+					[1, 1, 2, 5],
+					[1, 1, 3, 3],
+					[1, 1, 3, 4],
+					[1, 1, 3, 5],
+					[1, 1, 4, 4],
+					[1, 1, 4, 5],
+					[1, 1, 5, 5],
+
+
+					[1, 2, 2, 2],
+					[1, 2, 2, 3],
+					[1, 2, 2, 4],
+					[1, 2, 2, 5],
+					[1, 2, 3, 3],
+					[1, 2, 3, 4],
+					[1, 2, 3, 5],
+					[1, 2, 4, 4],
+					[1, 2, 4, 5],
+					[1, 2, 5, 5],
+				]//[1,2, 3, 4]
+			const arrow = document.getElementById('arrow');
+			let results = {}
+			const canvas = document.getElementById('canvas');
+			const ctx = canvas.getContext('2d');
+			ctx.fillStyle = 'rgb(255,255,255)';
+			const n = 4//results.rights.length
+			const arrowCtx = arrow.getContext('2d');
+			// results.rights = rights[0]
+
+			const state = initState()
+			let test = [1, 1, 3, 4]
+
+			// the render logic should be focusing on the rendering
 
 			placeArrow(arrowCtx, 200, 200, 50)
-			var drawGrid = function(context, w, h, step) {
-			    context.beginPath();
-			    for (var x=0;x<=w;x+=step) {
-			            context.moveTo(x, 0);
-			            context.lineTo(x, h);
-			    }
-
-			    context.strokeStyle = 'grey';
-			    context.lineWidth = 3;
-			    context.stroke();
-			    context.beginPath();
-			    for (var y=0;y<=h;y+=step) {
-			            context.moveTo(0, y);
-			            context.lineTo(w, y);
-			    }
-
-			    context.strokeStyle = 'grey';
-			    context.lineWidth = 3
-			    context.strokeStyle = "grey";
-			    context.stroke();
-			};
-			var grid = document.getElementById('grid');
-			var gridCtx = grid.getContext('2d');
+			let grid = document.getElementById('grid');
+			let gridCtx = grid.getContext('2d');
 			drawGrid(gridCtx, 200, 200, 50)
 			ctx.strokeStyle = "white"
 			ctx.lineWidth = 8
-			var grid2 = document.getElementById('grid2');
-			var grid2Ctx = grid2.getContext('2d');
+			let grid2 = document.getElementById('grid2');
+			let grid2Ctx = grid2.getContext('2d');
 			drawGrid(grid2Ctx, 200, 200, 50)
+			window.requestAnimationFrame(stepsLoop)
 		</script>
 	</body>
 </html>
