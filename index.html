@@ -32,34 +32,33 @@
 
 					Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
 				</p>
-				<canvas id="arrow" width="350" height="350" style="position: absolute; left: 0; top: 250pt; z-index: 10;">
+				<canvas id="arrow" width="350" height="350" style="position: absolute; left: 275pt; top: 250pt; z-index: 10;">
 				</canvas>
 		<div style="center">
-						<canvas id="canvas" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 1;">
+						<canvas id="canvas" width="400" height="400" style="position: absolute; left: 275pt; top: 300pt; z-index: 1;">
 						</canvas>
-						<canvas id="grid" width="400" height="400" style="position: absolute; left: 0; top: 300pt; z-index: 0;">
+						<canvas id="grid" width="400" height="400" style="position: absolute; left: 275pt; top: 300pt; z-index: 0;">
 						</canvas>
-						<canvas id="canvas2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 1;">
+					<canvas id="canvas2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 1;">
 						</canvas>
-						<canvas id="grid2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 0;">
-						</canvas>
+							<!-- <canvas id="grid2" width="400" height="400" style="position: absolute; left: 300; top: 300pt; z-index: 0;">
+						</canvas> -->
 
 		</div>
 
 					How many such routes are there through a 20×20 grid?
 				</section>
-				<section>Slide 2
-					<code >2(n-n-1) + <span id="po">2(n-2)</span> + ...+ 2(n-1)</code>
+				<section>Bisect Ying and Yang
+					<!-- <code >2(n-n-1) + <span id="po">2(n-2)</span> + ...+ 2(n-1)</code> -->
+<p>
+					Draw a single straight line through the design in such a way that it exactly bisects the areas of the Yin and Yang.<br>
+					In other words, either side of the line should be exactly half black and half white.
+				</p>
+					<img src="./pic.png" background="black">
 				</section>
 				<section data-markdown >
 						## Page title
-
-						A paragraph with some text and a [link](http://hakim.se).
-
-						```2(n-n-1) + 2(n-2) + ...+ 2(n-1)
-						```
-
-				</section>
+					</section>
 			</div>
 		</div>
 
@@ -428,13 +427,13 @@
 			ctx.strokeStyle = "white"
 			ctx.lineWidth = 8
 
-			const canvas2 = document.getElementById('canvas2');
-			const ctx2= canvas.getContext('2d');
-			let grid2 = document.getElementById('grid2');
-			let grid2Ctx = grid2.getContext('2d');
-			drawGrid(grid2Ctx, 200, 200, 100)
+			// const canvas2 = document.getElementById('canvas2');
+			// const ctx2= canvas.getContext('2d');
+			// // let grid2 = document.getElementById('grid2');
+			// // let grid2Ctx = grid2.getContext('2d');
+			// drawGrid(grid2Ctx, 200, 200, 100)
 			window.requestAnimationFrame(stepsLoop,ctx)
-			window.requestAnimationFrame(stepsLoop,ctx2)
+			// window.requestAnimationFrame(stepsLoop,ctx2)
 		</script>
 	</body>
 </html>
