@@ -1553,3 +1553,12 @@ body {
 
 .zoomed .reveal .roll span:after {
   visibility: hidden; }
+/*********************************************
+ * Custom
+ *********************************************/
+ .cite{
+   color:grey;
+   font-style: italic;
+   font-size: .5rem;
+   
+ }
