@@ -1553,3 +1553,13 @@ body {
 
 .zoomed .reveal .roll span:after {
   visibility: hidden; }
+
+ /*********************************************
+ * Custom for Worker's Presentation
+ *********************************************/
+ .cite{
+   color:grey;
+   font-style: italic;
+   font-size: .5rem;
+   
+ } 
