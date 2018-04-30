@@ -1561,5 +1561,17 @@ body {
    color:grey;
    font-style: italic;
    font-size: .5rem;
-   
  } 
+ pre code.hljs {
+  display: block;
+}
+p code {
+  display: inline;
+}
+code.javascript.hljs{
+  background:#576d75;
+  color:white;
+  padding: .2em;
+  font-size:.8em;
+}
+/* pre / */
