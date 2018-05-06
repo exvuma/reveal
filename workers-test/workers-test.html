@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Javascript Service Workers</title>
+        <script src='./rando.js'></script>
+        
+    </head>
+
+		<script>
+
+
+                        //make sure that Service Workers are supported.
+			// if(window.navigator && navigator.serviceWorker) {
+			// 	navigator.serviceWorker.getRegistrations()
+			// 	.then(function(registrations) {
+			// 		console.log('mult')
+			// 		console.log(registrations)
+				
+			// 		for(let registration of registrations) {
+			// 			registration.unregister();
+			// 			console.log('regist')
+			// 			console.log(registration)
+			// 		}
+			// 	});
+			// 	}
+            if (navigator.serviceWorker) {
+                navigator.serviceWorker.register('./service-worker.js', {scope: './'})
+                    .then(function (registration) {
+                        console.log(registration);
+                    })
+                    // .catch( function (e) {
+                    //     console.error(e);
+                    // })
+            } else {
+                console.log('Service Worker is not supported in this browser.');
+            }
+		</script>
+    <body>
+        <img src="./lib/JOHN.jpg" />
+    </body>
+</html>
