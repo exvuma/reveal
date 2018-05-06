@@ -10,6 +10,11 @@ module.exports = {
   devtool: 'inline-source-map',
   plugins: [
     new HtmlWebpackPlugin({ template: 'src/index.html' }),
+    new HtmlWebpackPlugin({
+      title: 'My App',
+      template: 'workers-test/workers-test.html',
+      filename:'sw.html'
+    }),
     new CopyWebpackPlugin([
       {
         from: './node_modules/reveal.js/plugin/',
