@@ -10,3 +10,50 @@
  code.inline{
    display: inline;
  }
+ .code-block{
+   background-color:#3f3f3f; 
+   width: 150%; 
+   height: 400%; 
+   position: absolute; top: -100%; 
+   left:55%;
+   z-index: -1;
+
+ }
+
+ .code-row .right-block  pre {
+   box-shadow:none;
+ }
+.right-block  pre {
+   box-shadow:none;
+ }
+ .right-block{
+   overflow:visible;
+    background-color:#3f3f3f; 
+   /* width: 55%;  */
+   /* display: inline-block; */
+   /* margin-right: 5%;  */
+   vertical-align: baseline;
+   position: relative;
+    top: -4em;
+    width:75%;
+    left: 40%; 
+    z-index: 2;
+   border:"none";
+  }
+  /* z-index: -1; */
+.code-row{
+  /* display:flex; */
+  width: 150%;
+}
+ .left-block{
+   width: 75%; 
+   /* width: 150%;  */
+   display: inline-block; 
+   margin-right: 5%; 
+   vertical-align: baseline;
+   position: relative;
+    /* top: -4em; */
+    right: 55%; 
+    z-index: 2;
+
+ }

@@ -15,8 +15,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 		<!-- <link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
-		<link rel="stylesheet" href="src/workers-pres.css"> -->
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme"> -->
+		<link rel="stylesheet" href="src/workers-pres.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<!-- <link rel="stylesheet" href="lib/css/zenburn.css"> --> 
@@ -97,17 +97,37 @@
 						</ul>
 					</aside>
 					</section>
-					<section>
+					<section data-transition="convex"> 
 						<h2>Simple A/B Testing</h2>
-						<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-							addEventListener('fetch', event => { 
-								event.respondWith(ABTestResponse(event.request)) 
-							});
-						</code></pre>
+	
 						<p>
-							Set up a function to return the fetched response for <code class='javascript hljs'>/control/some-path</code> or <code class='javascript hljs'>/test/some-path</code>, depending on the cookie. 
+							Set up a function to return the fetched response for <code class='javascript hljs inline'>/control/some-path</code> or <code class='javascript hljs inline'>/test/some-path</code>, depending on the cookie. 
 							Set the a cookie if there isn't one
 						</p>
+						<!-- </section>
+				
+						<section> -->
+							<pre class="fragment fade-out"><code class="javascript" data-trim contenteditable style="font-size: 18px;" >
+														addEventListener('fetch', event => { 
+															event.respondWith(ABTestResponse(event.request)) 
+														});
+													</code></pre>
+							<pre class="fragment  fade-up"  ><code class="javascript" data-trim contenteditable style="font-size: 18px;">
+									const name = 'experiment-0'
+									async function ABTestResponse(request) { 
+									let { isNew, group } = getGroup(request.headers.get('Cookie'))
+									let url = new URL(request.url) url.pathname =`/$\{group\}$\{url.pathname\}` 
+									const modifiedRequest = new Request(url, { 
+										method:request.method, 
+										headers: request.headers 
+									})
+									const response = await fetch(modifiedRequest) 
+									if (isNew) { 
+										return getResponseWithSetCookie(group,response) 
+									} else { return response } 
+									} 
+							</code></pre>
+
 
 							<aside class="notes">
 								<ul>
@@ -127,6 +147,61 @@
 								</ul>
 							</aside>
 	 
+					</section>
+					<section>
+						<div class="code-block ">
+						</div>
+						<div class="fragment" >
+						<div class="code-row">
+							<div class="left-block">
+								<p style="text-align: right;">
+									<b>actually, for functions with</b>
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable style="font-size: 18px;" >
+										addEventListener('fetch', event => { 
+											event.respondWith(ABTestResponse(event.request)) 
+										});
+									</code>
+								</pre>
+							</div>
+
+						</div>
+					</div>
+					<p class="fragment"></p>
+			
+					<div class="fragment">
+					<div class='code-row'>
+								<div class="left-block">
+									<p style="text-align: right;">
+										Set up a function to return the fetched response for
+									<code class='javascript hljs inline'>/control/some-path</code> or
+									<code class='javascript hljs inline'>/test/some-path</code>, depending on the cookie. Set the a cookie if there isn't one
+									</p>
+								</div>
+								<div class="right-block">
+									<pre>
+										<code class="javascript" data-trim contenteditable style="font-size: 18px;">
+											const name = 'experiment-0'
+											async function ABTestResponse(request) { 
+											let { isNew, group } = getGroup(request.headers.get('Cookie'))
+											let url = new URL(request.url) url.pathname =`/$\{group\}$\{url.pathname\}` 
+											const modifiedRequest = new Request(url, { 
+												method:request.method, 
+												headers: request.headers 
+											})
+											const response = await fetch(modifiedRequest) 
+											if (isNew) { 
+												return getResponseWithSetCookie(group,response) 
+											} else { return response } 
+											} 
+										</code>
+									</pre>
+								</div>
+							</div>
+					</div>
 					</section>
 					
 				
