@@ -1,0 +1,12 @@
+/*********************************************
+ * Custom
+ *********************************************/
+ .cite{
+   color:grey;
+   font-style: italic;
+   font-size: .5rem;
+   
+ } 
+ code.inline{
+   display: inline;
+ }
