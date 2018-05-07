@@ -20,6 +20,12 @@ module.exports = {
         from: './node_modules/reveal.js/plugin/',
         to: 'plugin/'
       }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: './workers-test/service-worker.js',
+        to: 'service-worker.js'
+      }
     ])
   ],
   module: {

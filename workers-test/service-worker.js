@@ -1,5 +1,5 @@
 const CACHE = 'meetup-cache';
-URLArr = []
+URLArr = ['./plugin/zoom-js/zoom.js']
 addURLsToCache = (URLs) =>{
     console.log('addurls')
     return caches.open(CACHE)
@@ -21,6 +21,7 @@ var CACHE_FILES = [
 var CACHE_VERSION = 'app-v1';
 self.addEventListener('install', function(event){
     // event.waitUntil(addURLsToCache(URLArr))
+    console.log('install service workers')
     event.waitUntil(() => {
         caches.open(CACHE_VERSION)
             .then(function (cache) {
@@ -61,39 +62,38 @@ function grabFromCache(req) {
     });
 }
 addEventListener('fetch', event => {
-   // event.respondWith(ABTestResponse(event.request))
-
-    console.log('so fetch')
-    a= grabFromCache(event.request)
-        return a
-    .catch( (e)=>
-  {      console.log("error geting from cahche")
-        event.respondWith(fetch(event.request))}
-    )
+    event.respondWith(ABTestResponse(event.request))
 })
 
-const name = 'experiment-0'
+/**
+ * Fetch and log a request
+ * @param {Request} request
+ */
+
+const name = 'experiment0'
 async function ABTestResponse(request) {
     let { isNew, group } = getGroup(request.headers.get('Cookie'))
     let url = new URL(request.url)
-
-    url.pathname = `/${group}${url.pathname}`
+    url = '/src/images/' + group + '.png'
+    console.log(url)
+    // url = (group === 'control') ? new URL(`https://pas-wordpress-media.s3.amazonaws.com/wp-content/uploads/2012/08/ID-100916651.jpg`) : new URL('http://eventzerz.com/wp-content/uploads/2018/03/Test-Logo-Small-Black-transparent-1.png')
     const modifiedRequest = new Request(url, {
         method: request.method,
         headers: request.headers
     })
     const response = await fetch(modifiedRequest)
-
     if (isNew) {
-        return getResponseWithSetCookie(group, response)
+        const t = getResponseWithSetCookie(group, response)
+        return t
     } else {
         return response
     }
 }
-async function regResponse(req){
+async function regResponse(req) {
     return await fetch(new Response(req))
 }
-function getGroup(cookie){
+function getGroup(cookie) {
+    isNew = false;
     if (cookie && cookie.includes(`${name}=control`)) {
         group = 'control'
     } else if (cookie && cookie.includes(`${name}=test`)) {
@@ -103,10 +103,10 @@ function getGroup(cookie){
         group = Math.random() < 0.5 ? 'control' : 'test'
         isNew = true
     }
-    return {isNew, group}
+    return { isNew, group }
 }
-function getResponseWithSetCookie(cookie, response){
-    const newHeaders = new Headers(response.headers)
+function getResponseWithSetCookie(group, response) {
+    let newHeaders = new Headers(response.headers)
     newHeaders.append('Set-Cookie', `${name}=${group}`)
     return new Response(response.body, {
         status: response.status,

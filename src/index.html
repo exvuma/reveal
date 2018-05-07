@@ -91,9 +91,15 @@
 						});
 					</code></pre>
 					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit »S« on your keyboard).
+	
 						<ul>
 							<li>this simply intercepts all requests and replaces all responses with 'this is the text of my new response..'</li>
+							<li>way to limit scope on proxies and browsers differ</li>
+							<li>The Service worker will now control pages, but only those opened after the register() is successful. i.e. a document starts
+								life with or without a Service worker and maintains that for its lifetime. So documents will have to be reloaded to actually
+								be controlled.
+							</li>
+							<li> Can also set up listeners for activated, installed events that can load items in cache or anything you want ran before your worker</li>
 						</ul>
 					</aside>
 					</section>
@@ -144,6 +150,11 @@
 										Note that `url.pathname` always begins with a `/`, so we don't 
 										need to explicitly add one after `$\{group\}`..
 									</li>
+									<li>
+										Note though you can use `set-cookier` in edge workers, this does not work
+										with browser service workers yet. in the future there maybe API added to do This
+										in browser
+									</li>
 								</ul>
 							</aside>
 	 
@@ -155,12 +166,12 @@
 						<div class="code-row">
 							<div class="left-block">
 								<p style="text-align: right;">
-									<b>actually, for functions with</b>
+									Intercept incoming requests
 								</p>
 							</div>
 							<div class="right-block">
 								<pre>
-									<code class="javascript" data-trim contenteditable style="font-size: 18px;" >
+									<code class="javascript" data-trim contenteditable style="font-size: 1.2em;" >
 										addEventListener('fetch', event => { 
 											event.respondWith(ABTestResponse(event.request)) 
 										});
@@ -183,7 +194,7 @@
 								</div>
 								<div class="right-block">
 									<pre>
-										<code class="javascript" data-trim contenteditable style="font-size: 18px;">
+										<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
 											const name = 'experiment-0'
 											async function ABTestResponse(request) { 
 											let { isNew, group } = getGroup(request.headers.get('Cookie'))
