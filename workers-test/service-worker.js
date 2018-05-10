@@ -75,7 +75,7 @@ async function ABTestResponse(request) {
     let { isNew, group } = getGroup(request.headers.get('Cookie'))
     let url = new URL(request.url)
     url = '/src/images/' + group + '.png'
-    console.log(url)
+    console.log(ur)
     // url = (group === 'control') ? new URL(`https://pas-wordpress-media.s3.amazonaws.com/wp-content/uploads/2012/08/ID-100916651.jpg`) : new URL('http://eventzerz.com/wp-content/uploads/2018/03/Test-Logo-Small-Black-transparent-1.png')
     const modifiedRequest = new Request(url, {
         method: request.method,
