@@ -2,17 +2,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
-  entry: './src/index.js',
+  entry:{
+    index: './src/index.js',
+    server: './sw-push.js'
+  },
   output: {
     path: __dirname + '/dist',
-    filename: 'index_bundle.js'
+    filename: '[name].js'
   },
   devtool: 'inline-source-map',
   plugins: [
     new HtmlWebpackPlugin({ template: 'src/index.html' }),
     new HtmlWebpackPlugin({
       title: 'My App',
-      template: 'workers-test/workers-test.html',
+      template: 'workers-test.html',
       filename:'sw.html'
     }),
     new CopyWebpackPlugin([
@@ -26,7 +29,19 @@ module.exports = {
         from: './workers-test/',
         to: 'workers-test/'
       }
-    ])
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: './wa-push.js',
+        to: 'wa-push.js'
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: './sw-push.js',
+        to: 'sw-push.js'
+      }
+    ]),
   ],
   module: {
     // loaders: [
