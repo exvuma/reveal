@@ -23,8 +23,8 @@ module.exports = {
     ]),
     new CopyWebpackPlugin([
       {
-        from: './workers-test/service-worker.js',
-        to: 'service-worker.js'
+        from: './workers-test/',
+        to: 'workers-test/'
       }
     ])
   ],
