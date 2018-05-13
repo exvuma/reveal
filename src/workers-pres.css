@@ -22,38 +22,41 @@
 
  .code-row .right-block  pre {
    box-shadow:none;
+   /* position: flex; */
  }
 .right-block  pre {
    box-shadow:none;
  }
- .right-block{
+
+  /* z-index: -1; */
+  .rando-block{
+    background:  linear-gradient(to right, rgba(63,63,74,0) 50%,rgba(63,63,74,0.65) 50%,rgba(63,63,74,0.65) 50%,rgba(0,0,0,0.65) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  }
+  .rando-block2{
+    display:flex;
+  }
+  .rando-block2 .left{
+    background: #ff000000;
+    flex:1;
+  }
+  .rando-block2 .right{
+    background:#3f3f3f;
+    flex:1;
+  }
+  .code-row{
+    display:flex;
+    align-items: center;
+    justify-content: first baseline;
+    width: 154%;/*  make 154% of the present container*/
+  }
+  .code-row>.left-block{
+    padding-right: 1em; 
+    flex:1;
+    background: #ff000000; /*transparent*/
+ }
+  .code-row>.right-block{
+   flex-shrink:1;
+   width:64%;
    overflow:visible;
     background-color:#3f3f3f; 
-   /* width: 55%;  */
-   /* display: inline-block; */
-   /* margin-right: 5%;  */
-   vertical-align: baseline;
-   position: relative;
-    top: -4em;
-    width:75%;
-    left: 40%; 
-    z-index: 2;
-   border:"none";
   }
-  /* z-index: -1; */
-.code-row{
-  /* display:flex; */
-  width: 150%;
-}
- .left-block{
-   width: 75%; 
-   /* width: 150%;  */
-   display: inline-block; 
-   margin-right: 5%; 
-   vertical-align: baseline;
-   position: relative;
-    /* top: -4em; */
-    right: 55%; 
-    z-index: 2;
-
- }
