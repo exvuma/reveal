@@ -1,11 +1,14 @@
 var CACHE_FILES = [
     // '/whatever-i-want-to-precache.jpg',
     // '/more-precache.html',
-    'http://localhost:8080/src/images/xmaskitty.jpg'
+    'http://localhost:8080/src/images/xmaskitty.jpg',
+    // 'src/safety.html',
+    'safety.html'
 ];
 var EXCLUDED_FILES = [
     '/src/images/x'
 ]
+var SAFETY_TMP = 'src/safety.html'
 var CACHE_VERSION = 'name-of-my-cache';
 var preCacheFunc = function(){
     return caches.open(CACHE_VERSION)
@@ -17,9 +20,11 @@ self.addEventListener('install', function (event) {
     event.waitUntil(preCacheFunc()) 
 })
 self.addEventListener('fetch', function (event) {
-    event.respondWith(grabFromCacheOrAdd(event.request))
+    let somesafe = getSomeSafeResp(event.request)
+    console.log('somesage', somesafe)
+    event.respondWith(somesafe)
 });
-function grabFromCacheOrAdd(req) {
+function getSomeSafeResp(req) {
     return caches.open(CACHE_VERSION).then(function (cache) {
         return cache.match(req).then(function (matching) {
             if (matching) {
@@ -27,8 +32,21 @@ function grabFromCacheOrAdd(req) {
                 return matching
             } else {
                 console.log('missed!')
-                // if(CACHEreq.url)
-                return cache.add(req)
+                return fetch(req.url)
+                .then( (response) =>{
+                    if(!response.ok) throw new Error('asdasd')
+                    console.log('success in populating the cache with tth response:', response)
+
+                    cache.add(req)
+                    
+                    return response
+                })
+                .catch(() => {
+                    console.log('askjdaksjd errro!!')
+                    t= cache.match(SAFETY_TMP)
+                    console.log('templ', t)
+                    return t
+                })
             }
         });
     });

@@ -18,6 +18,11 @@ module.exports = {
       template: 'workers-test.html',
       filename:'sw.html'
     }),
+    new HtmlWebpackPlugin({
+      title: 'My App',
+      template: './src/safety.html',
+      filename:'safety.html'
+    }),
     new CopyWebpackPlugin([
       {
         from: './node_modules/reveal.js/plugin/',
