@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "startCORS": "webpack-dev-server  --port 8080 --hot --host 0.0.0.0",
+    "startLocal": "webpack-dev-server  --port 8080 --hot --host local.missv.info"
   },
   "dependencies": {
     "copy-webpack-plugin": "^4.5.1",

@@ -27,6 +27,9 @@
                 <button  id='testCache'>Test Cache</button>
                 <button id='addImage'>Add Kitty</button>
             </div>
+            <div style='flex:1'>
+                <button  id='testCors'>Test Cors</button>
+            </div>
         </div>
        <!-- <img src="/src/images/control.png"/> -->
 		<script>
@@ -116,6 +119,19 @@
                         .catch( function (e) {
                             console.error(e);
                         })
+   
+                }
+                document.getElementById('testCors').onclick = async function () {
+                    let { getAirQuality } = await import('/wa-cors.js')
+                    let a = await getAirQuality()
+                    console.log(a)
+                    // navigator.serviceWorker.register('sw-cors.js', {scope: '/'})
+                    //     .then(function (registration) {
+                    //         console.log(registration);
+                    //     })
+                    //     .catch( function (e) {
+                    //         console.error(e);
+                    //     })
    
                 }
             }
