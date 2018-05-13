@@ -17,7 +17,6 @@
    position: absolute; top: -100%; 
    left:55%;
    z-index: -1;
-
  }
 
  .code-row .right-block  pre {
@@ -28,21 +27,6 @@
    box-shadow:none;
  }
 
-  /* z-index: -1; */
-  .rando-block{
-    background:  linear-gradient(to right, rgba(63,63,74,0) 50%,rgba(63,63,74,0.65) 50%,rgba(63,63,74,0.65) 50%,rgba(0,0,0,0.65) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  }
-  .rando-block2{
-    display:flex;
-  }
-  .rando-block2 .left{
-    background: #ff000000;
-    flex:1;
-  }
-  .rando-block2 .right{
-    background:#3f3f3f;
-    flex:1;
-  }
   .code-row{
     display:flex;
     align-items: center;
