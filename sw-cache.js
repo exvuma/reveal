@@ -13,35 +13,52 @@ addURLsToCache = (URLs) =>{
     })
 }
 var CACHE_FILES = [
+    // '/sw.html',
     '/',
+    // 'http://localhost:8080/src/images/*kitty.jpg',
+    'http://localhost:8080/src/images/xmaskitty.jpg',
     '/lib/css/zenburn.css',
-    '/lib/js/head.min.js',
-    '/lib/JOHN.jpg'
+    // '/lib/js/head.min.js',
+    // '/lib/JOHN.jpg'
 ];
 var CACHE_VERSION = 'app-v1';
-self.addEventListener('install', function(event){
-    // event.waitUntil(addURLsToCache(URLArr))
-    console.log('install service workers')
-    event.waitUntil(() => {
-        caches.open(CACHE_VERSION)
-            .then(function (cache) {
-                console.log('Opened cache');
-                return cache.addAll(CACHE_FILES);
-            })
-    })
-    console.log(event);
-    console.log('install')
-});
+var someFunc = function (){
+    console.log("waiting huntil")
+    return caches.open(CACHE_VERSION)
+        .then(function (cache) {
+            console.log('Opened cache');
+            return cache.addAll(CACHE_FILES);
+        })
+}
 
 self.addEventListener('activate', function(event){
+    // event.waitUntil(addURLsToCache(URLArr))
+    console.log('install service workers')
+
+    event.waitUntil(
+        (() => {
+            console.log("waiting huntil")
+            return caches.open(CACHE_VERSION)
+                .then(function (cache) {
+                    console.log('Opened cache');
+                    return cache.addAll(CACHE_FILES);
+                })
+        })()
+     )
+    })
+self.addEventListener('activate', function(event){
+    console.log('waited')
     event.waitUntil(addURLsToCache(URLArr))
+    console.log('waited2')
 
 });
 self.addEventListener('fetch', function(event){
     URLArr.push(event.request.url)
     // return something for each interception
     console.log('fetching')
-    event.respondWith(grabFromCache(event.request)) 
+    let whatIgotFromCache = grabFromCache(event.request)
+    console.log('from cache', whatIgotFromCache)
+    event.respondWith(whatIgotFromCache)
     // event.respondWith(new Response('whwate i want'))
 });
 function grabFromCache(req) {
@@ -54,7 +71,14 @@ function grabFromCache(req) {
                 return matching
             }else{
                 console.log('no match',req.url)
-                return fetch(req)
+                // ret
+                return cache.add(req)
+                // response = fetch(req)
+                // response.then((resp) =>{
+                //     cache.add(req)
+
+                // })
+                // return response
                 // return matching || Promise.reject('no-match');
 
             }
