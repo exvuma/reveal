@@ -103,91 +103,42 @@
 						</ul>
 					</aside>
 					</section>
-					<section data-transition="convex"> 
-						<h2>Simple A/B Testing</h2>
-	
-						<p>
-							Set up a function to return the fetched response for <code class='javascript hljs inline'>/control/some-path</code> or <code class='javascript hljs inline'>/test/some-path</code>, depending on the cookie. 
-							Set the a cookie if there isn't one
-						</p>
-						<!-- </section>
-				
-						<section> -->
-							<pre class="fragment fade-out"><code class="javascript" data-trim contenteditable style="font-si
-								
-								
-								ze: 18px;" >
-														addEventListener('fetch', event => { 
-															event.respondWith(ABTestResponse(event.request)) 
-														});
-													</code></pre>
-							<pre class="fragment  fade-up"  ><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-									const name = 'experiment-0'
-									async function ABTestResponse(request) { 
-									let { isNew, group } = getGroup(request.headers.get('Cookie'))
-									let url = new URL(request.url) url.pathname =`/$\{group\}$\{url.pathname\}` 
-									const modifiedRequest = new Request(url, { 
-										method:request.method, 
-										headers: request.headers 
-									})
-									const response = await fetch(modifiedRequest) 
-									if (isNew) { 
-										return getResponseWithSetCookie(group,response) 
-									} else { return response } 
-									} 
-							</code></pre>
-
-
-							<aside class="notes">
-								<ul>
-									<li> 
-										 Determine which group this request is in. 
-										 const cookie = request.headers.get('Cookie')
-									</li>
-									<li>  
-										 We'll prefix the request path with the experiment name. This way, 
-										 the origin server merely has to have two copies
-										of the site under top-level directories named "control" and "test".
-									</li>
-									<li>
-										Note that `url.pathname` always begins with a `/`, so we don't 
-										need to explicitly add one after `$\{group\}`..
-									</li>
-									<li>
-										Note though you can use `set-cookier` in edge workers, this does not work
-										with browser service workers yet. in the future there maybe API added to do This
-										in browser
-									</li>
-								</ul>
-							</aside>
-	 
-					</section>
+	<section class="present" style="top: 21px; display: block;">
+		<h2>Fragment Styles</h2>
+		<p>There's different types of fragments, like:</p>
+		<p class="fragment grow" data-fragment-index="0">grow</p>
+		<p class="fragment shrink" data-fragment-index="1">shrink</p>
+		<p class="fragment fade-out" data-fragment-index="2">fade-out</p>
+		<p class="fragment fade-up" data-fragment-index="3">fade-up (also down, left and right!)</p>
+		<p class="fragment current-visible" data-fragment-index="4">current-visible</p>
+		<p>Highlight
+			<span class="fragment highlight-red" data-fragment-index="5">red</span>
+			<span class="fragment highlight-blue" data-fragment-index="6">blue</span>
+			<span class="fragment highlight-green" data-fragment-index="7">green</span>
+		</p>
+	</section>
 					<section>
+						<h2>AB Testing</h2>
 						<div class="code-block ">
 						</div>
-						<div class="fragment" >
-						<div class="code-row">
-							<div class="left-block">
-								<p style="text-align: right;">
-									Intercept incoming requests
-								</p>
+						<!-- <span class="" > -->
+							<div class="fragment fade-up code-row">
+								<div class="left-block">
+									<p style="text-align: right;">
+										Intercept incoming requests
+									</p>
+								</div>
+								<div class="right-block">
+									<pre>
+										<code class="javascript" data-trim contenteditable style="font-size: 1.2em;" >
+											addEventListener('fetch', event => { 
+												event.respondWith(ABTestResponse(event.request)) 
+											});
+										</code>
+									</pre>
+								</div>
 							</div>
-							<div class="right-block">
-								<pre>
-									<code class="javascript" data-trim contenteditable style="font-size: 1.2em;" >
-										addEventListener('fetch', event => { 
-											event.respondWith(ABTestResponse(event.request)) 
-										});
-									</code>
-								</pre>
-							</div>
-
-						</div>
-					</div>
-					<p class="fragment"></p>
-			
-					<div class="fragment">
-					<div class='code-row'>
+							<div class='fragment fade-up code-row'>
 								<div class="left-block">
 									<p style="text-align: right;">
 										Set up a function to return the fetched response for
@@ -201,7 +152,8 @@
 											const name = 'experiment-0'
 											async function ABTestResponse(request) { 
 											let { isNew, group } = getGroup(request.headers.get('Cookie'))
-											let url = new URL(request.url) url.pathname =`/$\{group\}$\{url.pathname\}` 
+											let url = new URL(request.url) url.pathname 
+												=`/$\{group\}$\{url.pathname\}` 
 											const modifiedRequest = new Request(url, { 
 												method:request.method, 
 												headers: request.headers 
@@ -215,11 +167,120 @@
 									</pre>
 								</div>
 							</div>
-					</div>
+							<aside class="notes">
+								<ul>
+									<li>
+										Determine which group this request is in. const cookie = request.headers.get('Cookie')
+									</li>
+									<li>
+										We'll prefix the request path with the experiment name. This way, the origin server merely has to have two copies of the
+										site under top-level directories named "control" and "test".
+									</li>
+									<li>
+										Note that `url.pathname` always begins with a `/`, so we don't need to explicitly add one after `$\{group\}`..
+									</li>
+									<li>
+										Note though you can use `set-cookier` in edge workers, this does not work with browser service workers yet. in the future
+										there maybe API added to do This in browser
+									</li>
+								</ul>
+							</aside>
 					</section>
-					
-				
-
+					<section>
+						<h2>AB Testing</h2>
+						<div class="code-block ">
+						</div>
+						<div class='code-row fragment fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									Function to set cookie
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
+										function getResponseWithSetCookie(group, response) {
+											let newHeaders = new Headers(response.headers)
+											newHeaders.append('Set-Cookie', `$\{name\}=$\{group\}`)
+											return new Response(response.body, {
+												status: response.status,
+												statusText: response.statusText,
+												headers: newHeaders
+											})
+										}
+									</code>
+								</pre>
+							</div>
+						</div>
+						<div class='code-row fragment  fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									Set up a function to return the fetched response for
+								<code class='javascript hljs inline'>/control/some-path</code> or
+								<code class='javascript hljs inline'>/test/some-path</code>, depending on the cookie. Set the a cookie if there isn't one
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
+										const name = 'experiment-0'
+										async function ABTestResponse(request) { 
+										let { isNew, group } = getGroup(request.headers.get('Cookie'))
+										let url = new URL(request.url) url.pathname 
+											=`/$\{group\}$\{url.pathname\}` 
+										const modifiedRequest = new Request(url, { 
+											method:request.method, 
+											headers: request.headers 
+										})
+										const response = await fetch(modifiedRequest) 
+										if (isNew) { 
+											return getResponseWithSetCookie(group,response) 
+										} else { return response } 
+										} 
+									</code>
+								</pre>
+							</div>
+						</div>
+					<!-- </div> -->
+		
+					</section>
+					<section>
+						<h2>Slide with Code Templ</h2>
+						<div class="code-block ">
+						</div>
+						<div class="fragment fade-up">
+							<div class='code-row'>
+								<div class="left-block">
+									<p style="text-align: right;">
+										Function to set cookie
+									</p>
+								</div>
+								<div class="right-block">
+									<pre>
+										<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
+											Javascripts
+										</code>
+									</pre>
+								</div>
+							</div>
+						</div>
+						<div class="fragment fade-up">
+							<div class='code-row'>
+								<div class="left-block">
+									<p style="text-align: right;">
+										Function to set cookie
+									</p>
+								</div>
+								<div class="right-block">
+									<pre>
+										<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
+											Javascripts
+										</code>
+									</pre>
+								</div>
+							</div>
+						</div>
+					</section>
 			</div>
 
 		</div>
@@ -275,6 +336,7 @@
             } else {
                 console.log('Service Worker is not supported in this browser.');
             }
+
 		</script>
 
 	</body>

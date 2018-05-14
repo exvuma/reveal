@@ -14,7 +14,9 @@
    background-color:#3f3f3f; 
    width: 150%; 
    height: 400%; 
-   position: absolute; top: -100%; 
+   position: absolute; 
+   /* top: -100%;  */
+   top:16%;
    left:55%;
    z-index: -1;
  }
@@ -43,4 +45,10 @@
    width:64%;
    overflow:visible;
     background-color:#3f3f3f; 
+  }
+  .code-row>.left-block p{
+    font-size: 70%;
+  }
+  .code-row>.right-block pre{
+      font-size: 40%;
   }

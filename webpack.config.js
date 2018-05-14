@@ -23,12 +23,12 @@ module.exports = {
       template: './src/safety.html',
       filename:'safety.html'
     }),
-    new CopyWebpackPlugin([
-      {
-        from: './node_modules/reveal.js/plugin/',
-        to: 'plugin/'
-      }
-    ]),
+    // new CopyWebpackPlugin([
+    //   {
+    //     from: './node_modules/reveal.js/plugin/',
+    //     to: 'plugin/'
+    //   }
+    // ]),
     new CopyWebpackPlugin([
       {
         from: './workers-test/',
