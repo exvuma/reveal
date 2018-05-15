@@ -118,7 +118,7 @@
 						</p>
 					</section>
 					<section data-transition="none" data-background-transition="none" >
-						<h2>AB Testing 1</h2>
+						<h2>AB Testing</h2>
 						<div class="code-block ">
 						</div>
 						<!-- <span class="" > -->
@@ -187,7 +187,7 @@
 							</aside>
 					</section>
 					<section data-transition="none" data-background-transition="none" >
-						<h2>AB Testing2</h2>
+						<h2>AB Testing</h2>
 						<div class="code-block "></div>
 						<div class='code-row fragment fade-up'>
 							<div class="left-block">
@@ -214,75 +214,12 @@
 						<div class='code-row fragment fade-up'>
 							<div class="left-block">
 								<p style="text-align: right;">
-									Function to set cookie
+									Function to get group
 								</p>
 							</div>
 							<div class="right-block">
 								<pre>
 									<code class="javascript" data-trim contenteditable >
-										function getResponseWithSetCookie(group, response) {
-											let newHeaders = new Headers(response.headers)
-											newHeaders.append('Set-Cookie', `$\{name\}=$\{group\}`)
-											return new Response(response.body, {
-												status: response.status,
-												statusText: response.statusText,
-												headers: newHeaders
-											})
-										}
-									</code>
-								</pre>
-							</div>
-						</div>
-						<!-- </div> -->
-						
-					</section>
-					 
-					<section class="present" style="top: 21px; display: block;">
-						<h2>AB Testing</h2>
-						<div class="code-block ">
-						</div>
-						<div class='code-row fragment  fade-up'>
-							<div class="left-block">
-								<p style="text-align: right;">
-									Set up a function to return the fetched response for
-								<code class='javascript hljs inline'>/control/some-path</code> or
-								<code class='javascript hljs inline'>/test/some-path</code>, depending on the cookie. Set the a cookie if there isn't one
-								</p>
-							</div>
-							<div class="right-block">
-								<pre>
-									<code class="javascript" data-trim contenteditable >
-										const name = 'experiment-0'
-										async function ABTestResponse(request) { 
-										let { isNew, group } = getGroup(request.headers.get('Cookie'))
-										let url = new URL(request.url) url.pathname 
-											=`/$\{group\}$\{url.pathname\}` 
-										const modifiedRequest = new Request(url, { 
-											method:request.method, 
-											headers: request.headers 
-										})
-										const response = await fetch(modifiedRequest) 
-										if (isNew) { 
-											return getResponseWithSetCookie(group,response) 
-										} else { return response } 
-										} 
-									</code>
-								</pre>
-							</div>
-						</div>
-						<div class="fragment fade-up">
-							<div class='code-row'>
-								<div class="left-block">
-									<p style="text-align: right;">
-										Function to set cookie
-									</p>
-								</div>
-								<div class="right-block">
-									<pre>
-										<code class="javascript" data-trim contenteditable>
-										async function regResponse(req) {
-											return await fetch(new Response(req))
-										}
 										function getGroup(cookie) {
 											isNew = false;
 											if (cookie && cookie.includes(`$\{name\}=control`)) {
@@ -296,13 +233,239 @@
 											}
 											return { isNew, group }
 										}
-										</code>
-									</pre>
-								</div>
+									</code>
+								</pre>
 							</div>
 						</div>
+						<!-- </div> -->
+						
+				</section>
 
+					
+				<section data-transition="none" data-background-transition="none" >
+					<h2>Caching</h2>
+					<div class="code-block "></div>
+					<div class='fragment fade-up code-row'>
+						<div class="left-block">
+							<p style="text-align: right;">
+								Pre cache all the files that we specify by some <code class='javascript hljs inline'>CACHE_FILES</code>
+							</p>
+						</div>
+						<div class="right-block">
+							<pre>
+								<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
+								var CACHE_VERSION = 'name-of-my-cache';
+
+								var CACHE_FILES = [
+									'/whatever-i-want-to-precache.jpg',
+									'/more-precache.html',
+									'http://localhost:8080/src/images/xmaskitty.jpg'
+								];
+
+								var preCacheFunc = function(){
+									return caches.open(CACHE_VERSION)
+										.then(function (cache) {
+											return cache.addAll(CACHE_FILES);
+										})
+								}
+
+								</code>
+							</pre>
+						</div>
+					</div>
+					<div class="fragment fade-up code-row">
+						<div class="left-block">
+							<p style="text-align: right;">
+								Populate the cache on installing the worker
+							</p>
+						</div>
+						<div class="right-block">
+							<pre>
+								<code class="javascript" data-trim contenteditable style="font-size: 1.2em;" >
+									self.addEventListener('install', function (event) { 
+										event.waitUntil(preCacheFunc()) 
+									})
+								</code>
+							</pre>
+						</div>
+					</div>
+						<aside class="notes">
+							<ul>
+								<li>
+									First let's setup an install listener to preCache right when the SW is installed
+								</li>
+				
+							</ul>
+						</aside>
 					</section>
+					<section data-transition="none" data-background-transition="none" >
+						<h2>CORs </h2>
+						<div class="code-block "></div>
+						<div class='code-row fragment fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									Set an event listener for any fetch on the scope of this service worker.
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable >
+										self.addEventListener('fetch', function (event) {
+											event.respondWith(grabFromCacheOrAdd(event.request))
+										});
+										
+									</code>
+								</pre>
+							</div>
+						</div>
+						<div class='code-row fragment fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									 Now, we will try to get the request from cache, if it's not there we will add ALL requests to that cache specified by <code class='javascript hljs inline'>CACHE_VERSION</code>
+									regardless if it was in preCache files or not
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable >
+											function grabFromCacheOrAdd(req) {
+												return caches.open(CACHE_VERSION).then(function (cache) {
+													return cache.match(req).then(function (matching) {
+														if (matching) {
+															return matching
+														} else {
+															return cache.add(req)
+														}
+													});
+												});
+											}
+										</code>
+								</pre>
+							</div>
+						</div>
+						<aside class="notes">
+							<ul>
+								Keep in mind this is a totally bungues example. Caching EVERYTHING static and
+								dynamic on your site is crazy and should probably only happen in special cases
+								when your site is actually down, but jsut work with me here for illustrative purposes
+						
+							</ul>
+						</aside>
+						<!-- </div> -->
+						
+					</section>					
+				<section data-transition="none" data-background-transition="none" >
+					<h2>Caching</h2>
+					<div class="code-block "></div>
+					<div class='fragment fade-up code-row'>
+						<div class="left-block">
+							<p style="text-align: right;">
+								Pre cache all the files that we specify by some <code class='javascript hljs inline'>CACHE_FILES</code>
+							</p>
+						</div>
+						<div class="right-block">
+							<pre>
+								<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
+								var CACHE_VERSION = 'name-of-my-cache';
+
+								var CACHE_FILES = [
+									'/whatever-i-want-to-precache.jpg',
+									'/more-precache.html',
+									'http://localhost:8080/src/images/xmaskitty.jpg'
+								];
+
+								var preCacheFunc = function(){
+									return caches.open(CACHE_VERSION)
+										.then(function (cache) {
+											return cache.addAll(CACHE_FILES);
+										})
+								}
+
+								</code>
+							</pre>
+						</div>
+					</div>
+					<div class="fragment fade-up code-row">
+						<div class="left-block">
+							<p style="text-align: right;">
+								Populate the cache on installing the worker
+							</p>
+						</div>
+						<div class="right-block">
+							<pre>
+								<code class="javascript" data-trim contenteditable style="font-size: 1.2em;" >
+									self.addEventListener('install', function (event) { 
+										event.waitUntil(preCacheFunc()) 
+									})
+								</code>
+							</pre>
+						</div>
+					</div>
+						<aside class="notes">
+							<ul>
+								<li>
+									First let's setup an install listener to preCache right when the SW is installed
+								</li>
+				
+							</ul>
+						</aside>
+					</section>
+					<section data-transition="none" data-background-transition="none" >
+						<h2>Caching</h2>
+						<div class="code-block "></div>
+						<div class='code-row fragment fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									Set an event listener for any fetch on the scope of this service worker.
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable >
+										self.addEventListener('fetch', function (event) {
+											event.respondWith(grabFromCacheOrAdd(event.request))
+										});
+										
+									</code>
+								</pre>
+							</div>
+						</div>
+						<div class='code-row fragment fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									 Now, we will try to get the request from cache, if it's not there we will add ALL requests to that cache specified by <code class='javascript hljs inline'>CACHE_VERSION</code>
+									regardless if it was in preCache files or not
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable >
+											function grabFromCacheOrAdd(req) {
+												return caches.open(CACHE_VERSION).then(function (cache) {
+													return cache.match(req).then(function (matching) {
+														if (matching) {
+															return matching
+														} else {
+															return cache.add(req)
+														}
+													});
+												});
+											}
+										</code>
+								</pre>
+							</div>
+						</div>
+						<aside class="notes">
+							<ul>
+								Keep in mind this is a totally bungues example. Caching EVERYTHING static and
+								dynamic on your site is crazy and should probably only happen in special cases
+								when your site is actually down, but jsut work with me here for illustrative purposes
+						
+							</ul>
+						</aside>
+						<!-- </div> -->
+						
+					</section>					
 					<section>
 						<h2>Slide with Code Templ</h2>
 						<div class="code-block ">
