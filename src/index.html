@@ -73,50 +73,6 @@
 						<a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Mozilla</a>
 					</div> -->
 				</section>
-				<section>
-					<h2>Get Started</h2>
-					<p>
-						Register and install your service worker. (For browser service worker only):
-					</p>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-						if (navigator.serviceWorker) 
-							navigator.serviceWorker.register('./service.js', {scope: './'}) 
-				    </code></pre>
-					<p> 
-						 Set up a listener for fetch to intercept requests. (For all service workers):
-					</p>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-						addEventListener('fetch', event => { 
-							event.respondWith(new Response('this is the text of the new response')) 
-						});
-					</code></pre>
-					<aside class="notes">
-	
-						<ul>
-							<li>this simply intercepts all requests and replaces all responses with 'this is the text of my new response..'</li>
-							<li>way to limit scope on proxies and browsers differ</li>
-							<li>The Service worker will now control pages, but only those opened after the register() is successful. i.e. a document starts
-								life with or without a Service worker and maintains that for its lifetime. So documents will have to be reloaded to actually
-								be controlled.
-							</li>
-							<li> Can also set up listeners for activated, installed events that can load items in cache or anything you want ran before your worker</li>
-						</ul>
-					</aside>
-					</section>
-					<section class="present" style="top: 21px; display: block;">
-						<h2>Fragment Styles</h2>
-						<p>There's different types of fragments, like:</p>
-						<p class="fragment grow" data-fragment-index="0">grow</p>
-						<p class="fragment shrink" data-fragment-index="1">shrink</p>
-						<p class="fragment fade-out" data-fragment-index="2">fade-out</p>
-						<p class="fragment fade-up" data-fragment-index="3">fade-up (also down, left and right!)</p>
-						<p class="fragment current-visible" data-fragment-index="4">current-visible</p>
-						<p>Highlight
-							<span class="fragment highlight-red" data-fragment-index="5">red</span>
-							<span class="fragment highlight-blue" data-fragment-index="6">blue</span>
-							<span class="fragment highlight-green" data-fragment-index="7">green</span>
-						</p>
-					</section>
 					<section data-transition="none" data-background-transition="none" >
 						<h2>AB Testing</h2>
 						<div class="code-block ">
@@ -259,7 +215,7 @@
 								var CACHE_FILES = [
 									'/whatever-i-want-to-precache.jpg',
 									'/more-precache.html',
-									'http://localhost:8080/src/images/xmaskitty.jpg'
+									'https://dha4w82d62smt.cloudfront.net/items/0D332o240A1b1b1v0C0b/Screen%20Shot%202018-05-15%20at%2010.21.35%20PM.png?X-CloudApp-Visitor-Id=2888863&v=09c96385'
 								];
 
 								var preCacheFunc = function(){
@@ -295,62 +251,6 @@
 									First let's setup an install listener to preCache right when the SW is installed
 								</li>
 				
-							</ul>
-						</aside>
-					</section>
-					<section data-transition="none" data-background-transition="none" >
-						<h2>Caching</h2>
-						<div class="code-block "></div>
-						<div class='fragment fade-up code-row'>
-							<div class="left-block">
-								<p style="text-align: right;">
-									Pre cache all the files that we specify by some <code class='javascript hljs inline'>CACHE_FILES</code>
-								</p>
-							</div>
-							<div class="right-block">
-								<pre>
-									<code class="javascript" data-trim contenteditable style="font-size: 1.2em;">
-										var CACHE_VERSION = 'name-of-my-cache';
-										
-										var CACHE_FILES = [
-										'/whatever-i-want-to-precache.jpg',
-										'/more-precache.html',
-										'http://localhost:8080/src/images/xmaskitty.jpg'
-										];
-										
-										var preCacheFunc = function(){
-											return caches.open(CACHE_VERSION)
-											.then(function (cache) {
-												return cache.addAll(CACHE_FILES);
-											})
-										}
-										
-									</code>
-								</pre>
-							</div>
-						</div>
-						<div class="fragment fade-up code-row">
-							<div class="left-block">
-								<p style="text-align: right;">
-									Populate the cache on installing the worker
-								</p>
-							</div>
-							<div class="right-block">
-								<pre>
-									<code class="javascript" data-trim contenteditable style="font-size: 1.2em;" >
-										self.addEventListener('install', function (event) { 
-											event.waitUntil(preCacheFunc()) 
-										})
-									</code>
-								</pre>
-							</div>
-						</div>
-						<aside class="notes">
-							<ul>
-								<li>
-									First let's setup an install listener to preCache right when the SW is installed
-								</li>
-								
 							</ul>
 						</aside>
 					</section>
@@ -401,6 +301,10 @@
 						</div>
 						<aside class="notes">
 							<ul>
+								<li>
+									First let's setup an install listener to preCache right when the SW is installed
+									
+								</li>
 								Keep in mind this is a totally bungues example. Caching EVERYTHING static and
 								dynamic on your site is crazy and should probably only happen in special cases
 								when your site is actually down, but jsut work with me here for illustrative purposes
@@ -411,15 +315,70 @@
 						
 					</section>					
 					<section data-transition="none" data-background-transition="none" >
+						<h2>Offline</h2>
+						<div class="code-block "></div>
+						<div class='code-row fragment fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									Warm cache with <code class='javascript hljs inline'> SAFETY_TMP</code>
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable >
+										var SAFETY_TMP = 'src/safety.html'
+										var CACHE_VERSION = 'name-of-my-cache';
+										var preCacheFunc = function(){
+											return caches.open(CACHE_VERSION)
+												.then(function (cache) {
+													return cache.add(SAFETY_TMP);
+												})
+										}
+									</code>
+								</pre>
+							</div>
+						</div>
+						<div class='code-row fragment fade-up'>
+							<div class="left-block">
+								<p style="text-align: right;">
+									Set an event listener for any fetch. If fails, return <code class='javascript hljs inline'>SAFETY_TMP</code>
+								</p>
+							</div>
+							<div class="right-block">
+								<pre>
+									<code class="javascript" data-trim contenteditable >
+									self.addEventListener('fetch', function (event) {
+										return event.respondWith(fetch(event.request)
+											.then(resp => {
+												if (!resp.ok) {
+													return grabFromCacheOrAdd(SAFETY_TMP)
+												}
+												return resp
+											})
+											.catch(error => {
+												return grabFromCacheOrAdd(SAFETY_TMP)
+											})
+										)}
+									);
+									</code>
+								</pre>
+							</div>
+						</div>
+						<aside class="notes">
+							<ul>
+								<li>Fetch promises only reject with a TypeError when a network error occurs. Since 4xx and 5xx responses
+							aren't network errors, there's nothing to catch. You'll need to throw an error yourself to use Promise#catch.
+								</li>
+								
+							</ul>
+						</aside>
+						<!-- </div> -->
+						
+					</section>					
+					<section data-transition="none" data-background-transition="none" >
 						<h2>CORs</h2>
 							 Ever been really annoyed of developing with CORS errors ?
-							 <img src="'http://localhost:8080/src/images/xmaskitty.jpg"/>
-							 ``` 
-							 Failed to load http://missv.info/external: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-							Origin 'http://local.missv.info:8080' is therefore not allowed access. If an opaque response serves your needs, set the request's
-							mode to 'no-cors' to fetch the resource with CORS disabled.
-							 ```
-
+							 <img src="https://dha4w82d62smt.cloudfront.net/items/0a3y1i2L0P090T1y2t14/Screen%20Shot%202018-05-14%20at%208.35.14%20PM.png?X-CloudApp-Visitor-Id=2888863&v=bf034ef1">
 						<aside class="notes">
 							<ul>
 							Service workers provide a hacky work around for dealing with CORS. One could communicate with whatever external host they
@@ -437,7 +396,6 @@
 								<div class="left-block">
 									<p style="text-align: right;">
 										 You want to run: 
-									
 									</p>
 								</div>
 								<div class="right-block">
@@ -475,6 +433,17 @@
 								</div>
 							</div>
 						</div>
+					</section>
+					<section data-transition="none" data-background-transition="none" >
+						<h2>So much more..</h2>
+						<ul>
+							<li>Performance</li>
+							<li>Push Notifications</li>
+							<li>Progressive Web Apps</li>
+						</ul>
+					</section>
+					<section data-transition="none" data-background-transition="none" >
+						<h1> Questions? Comments? </h1>
 					</section>
 			</div>
 
