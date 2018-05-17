@@ -15,7 +15,7 @@ addURLsToCache = (URLs) =>{
 var CACHE_FILES = [
     '/',
     '/lib/css/zenburn.css',
-    '/lib/js/head.min.js',
+    // '/lib/js/head.min.js',
     '/lib/JOHN.jpg'
 ];
 var CACHE_VERSION = 'app-v1';
