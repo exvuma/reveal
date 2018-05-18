@@ -10,7 +10,7 @@
  code.inline{
    display: inline;
  }
- .code-block{
+ section .code-block{
    background-color:#3f3f3f; 
    width: 150%; 
    height: 400%; 

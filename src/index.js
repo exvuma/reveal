@@ -30,10 +30,10 @@ window.Reveal = Reveal;
 // console.log('foo')
 Reveal.addEventListener('fragmentshown', function (event) {
     // event.fragment = the fragment DOM element
-    console.log(event.fragment)
+    // console.log(event.fragment)
 });
 Reveal.addEventListener('fragmenthidden', function (event) {
     // event.fragment = the fragment DOM element
-    console.log(event.fragment)
+    // console.log(event.fragment)
 });
 

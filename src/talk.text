@@ -22,3 +22,24 @@ Setup an install listener to preCache right when the SW is installed
 SW has a built in event called installed. Note this is not true for all web workers like Cloudflare workers. 
 
 
+Now, we will try to get ANY request from cache, if it's not there we will add the request to
+that cache specified by CACHE_VERSION regardless if it was in preCache files or not
+
+Keep in mind this is a totally bungues example. Caching EVERYTHING static and
+dynamic on your site is crazy and should probably only happen in special cases
+when your site is actually down, but jsut work with me here for illustrative purposes
+
+################################################
+
+Much of the progressiveness of progressive web apps come from the offline capability. Looking into an offline Step one, setup a "safety" page that 
+is precached when the worker was installed. Keep in mind this is all on the browser level. We will use the same install listener 
+to call preCache that we did in the previous example. For every fetch, check that the fetch did not fail and that the response returned was 
+"ok". If not, serve that safety page we precached in the prior step.
+
+
+################################################
+############  AB Test  #########################
+
+So you did some redesigns on your site now and now you want to test them. Let's say you put the redesigns on a path called /test/some-path
+How can we set it so that 50% of useres are served this path and other 50% served one called /control/some-path? 
+Let's setup that 

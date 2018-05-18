@@ -2,14 +2,25 @@
 <html lang="en">
 
 	<head>
-		<meta charset="utf-8">
-        <script src='../dist/index_bundle.js'></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src='..//index_bundle.js'></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+            crossorigin="anonymous">
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+                crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+                crossorigin="anonymous"></script>
 		<title>Javascript Service Workers</title>
         
     </head>
 
     <body>
-        <div class='' style='display: flex'>
+        <div class='container' style='display: block'>
+            <h2>Testing Service Workers</h2>
+            <div class='container' style='display: flex'>
             <div class='container' style='flex:1'>
                 <button   id='testPush'>Test Push</button><br>
                 <button   id='testNotification'>Test Notification</button><br>
@@ -26,10 +37,18 @@
             <div style='flex:1'>
                 <button  id='testCache'>Test Cache</button>
                 <button id='addImage'>Add Kitty</button>
+                <button id='addImage'>Clear Kitty Cache</button>
+            </div>
+            <div style='flex:1'>
+                <button  id='testOffline'>Test Offline</button>
             </div>
             <div style='flex:1'>
                 <button  id='testCors'>Test Cors</button>
             </div>
+        </div>
+        <div>
+            <img src="" id='kittyimg' style="width:45%">
+        </div>
         </div>
        <!-- <img src="/src/images/control.png"/> -->
 		<script>
@@ -104,8 +123,25 @@
                 }
                 document.getElementById('addImage').onclick = async function () {
                     try {
-                        let { CachePush } = await import('/wa-cache.js')
-                        CachePush('src/images/xmaskitty.jpg')
+                        // let { CachePush } = await import('/wa-cache.js')
+                        // CachePush('src/images/.png')
+                        //  adds image given by path to the DOM as id 'kittyimg'
+                        path = 'src/images/kitty.jpg'
+                        let kittyEl = document.getElementById('kittyimg')
+                        if (kittyEl)
+                        return kittyEl.setAttribute("src", path);
+                        //get image from cache
+
+                        let fileref = document.createElement('img');
+                        fileref.setAttribute('id', 'kittyimg')
+                        fileref.setAttribute("src", path);
+                        fileref.setAttribute('style', "width:50%;height:50%;")
+                        // fileref.setAttribute('rotate', '90')//  style="width:500px;height:600px;"
+                        // fileref.setAttribute(' image-orientation', 'from-image;')
+                        document.body.appendChild(fileref);
+
+                        
+
                     } catch (e) {
                         console.error(e)
                     }
@@ -113,6 +149,16 @@
                 }
                 document.getElementById('testCache').onclick = function () {
                     navigator.serviceWorker.register('sw-cache.js', {scope: '/'})
+                        .then(function (registration) {
+                            console.log(registration);
+                        })
+                        .catch( function (e) {
+                            console.error(e);
+                        })
+   
+                }
+                document.getElementById('testOffline').onclick = function () {
+                    navigator.serviceWorker.register('sw-offline.js', {scope: ''}) //'/wsj.html'})
                         .then(function (registration) {
                             console.log(registration);
                         })

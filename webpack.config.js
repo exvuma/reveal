@@ -2,33 +2,48 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
+  mode:'production',
   entry:{
     index: './src/index.js',
+
     server: './sw-push.js'
   },
   output: {
     path: __dirname + '/dist',
     filename: '[name].js'
   },
+
+
   devtool: 'inline-source-map',
   plugins: [
     new HtmlWebpackPlugin({ template: 'src/index.html' }),
     new HtmlWebpackPlugin({
-      title: 'My App',
+      title: 'Workers Test',
       template: 'workers-test.html',
       filename:'sw.html'
+    }),
+    new HtmlWebpackPlugin({
+      title: 'My App',
+      template: 'wsj.html',
+      filename:'wsj.html'
     }),
     new HtmlWebpackPlugin({
       title: 'My App',
       template: './src/safety.html',
       filename:'safety.html'
     }),
-    // new CopyWebpackPlugin([
-    //   {
-    //     from: './node_modules/reveal.js/plugin/',
-    //     to: 'plugin/'
-    //   }
-    // ]),
+    new CopyWebpackPlugin([
+      {
+        from: './node_modules/reveal.js/plugin/',
+        to: 'plugin/'
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: './src/images/',
+        to: 'images/'
+      }
+    ]),
     new CopyWebpackPlugin([
       {
         from: './workers-test/',
@@ -45,6 +60,18 @@ module.exports = {
       {
         from: './sw-push.js',
         to: 'sw-push.js'
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: './sw-offline.js',
+        to: 'sw-offline.js'
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: './sw-cache.js',
+        to: 'sw-cache.js'
       }
     ]),
   ],
